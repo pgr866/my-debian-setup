@@ -7,7 +7,7 @@ This repository includes the following utilities:
 - `debian_usb_maker.sh`: Creates a bootable Debian USB installer from an ISO, supporting automated installations via optional preseed configuration.
 - `preseed.cfg`: My personal Debian 13 (Trixie) installer configuration. It provides a minimal installation with automated full-disk partitioning (atomic layout), keeping most installer settings at their default values while customizing the system for an English environment with Spanish keyboard, time, and regional settings. For further customization and advanced configuration options, please refer to the official [Debian Installer Preseed documentation](https://www.debian.org/releases/stable/amd64/apb.en.html).
 - `wallpaper.png`: Place this file in the project root directory to have it automatically applied as your desktop background during installation.
-- `setup_gnome.sh`: Installs a minimal GNOME desktop environment, applies custom UI preferences, configures Network Manager, and deploys essential GNOME extensions.
+- `setup_plasma.sh`: Installs a minimal KDE Plasma desktop environment with essential KDE applications, and applies a custom theme, panel layout, and UI preferences.
 - `setup_nvidia_driver.sh`: Installs NVIDIA proprietary drivers, configures GRUB and kernel modesetting, and optimizes the system for graphics hardware compatibility.
 - `setup_packages.sh`: Performs a full system upgrade, installs essential software, configures development environments (Git, VS Code, Docker, Terraform), and sets up user-specific desktop tools and media utilities.
 - `install.sh`: The main orchestration script that downloads, configures, and executes all necessary utilities to fully provision your Debian environment.
