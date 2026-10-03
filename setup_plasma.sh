@@ -46,9 +46,14 @@ sudo apt-get install -y --no-install-recommends proton-vpn-gnome-desktop
 # Install KDE Wallet PAM module for automatic keyring unlock at login
 sudo apt-get install -y --no-install-recommends libpam-kwallet5
 
+# sudo apt-get install -y --no-install-recommends libglib2.0-bin
+# gsettings set org.gnome.desktop.wm.preferences button-layout "menu:minimize,maximize,close"
+
+# kwriteconfig6 --file ~/.config/gtk-3.0/settings.ini --group Settings --key gtk-decoration-layout ":minimize,maximize,close"
+
 # kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnLeft "N"
 # kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnRight "IAX"
-# gsettings set org.gnome.desktop.wm.preferences button-layout "menu:minimize,maximize,close"
+
 # sudo apt-get install -y --no-install-recommends dconf-gsettings-backend libglib2.0-bin
 
 # Sets up my custom desktop theme for the current user
@@ -77,51 +82,49 @@ cd ~
 rm -rf /tmp/mytheme
 
 # Settings: look and feel, window behavior, Dolphin and file dialogs
-kw() { kwriteconfig6 --file "$1" --group "$2" --key "$3" "$4"; }
 fd="KFileDialog Settings"
 
-kw kdeglobals KDE AnimationDurationFactor 0
+kwriteconfig6 --file kdeglobals --group KDE --key AnimationDurationFactor 0
 
 QT_QPA_PLATFORM=offscreen plasma-apply-colorscheme Carl
-kw plasmarc Theme name breeze-dark
-kw kdeglobals Icons Theme Papirus
-kw kcminputrc Mouse cursorTheme Bibata-Modern-Classic
-kw kwinrc org.kde.kdecoration2 library org.kde.kwin.aurorae
-kw kwinrc org.kde.kdecoration2 theme __aurorae__svg__Utterly-Round-Dark
-kw kwinrc org.kde.kdecoration2 ButtonsOnLeft "N"
-kw kwinrc org.kde.kdecoration2 ButtonsOnRight "IAX"
-kw auroraerc Utterly-Round-Dark ButtonSize 0
-kw breezerc Common OutlineCloseButton true
-kw breezerc Windeco ButtonSize ButtonSmall
-kw breezerc Windeco DrawBorderOnMaximizedWindows true
-kw ksplashrc KSplash Theme None
-kw ksplashrc KSplash Engine none
-kw kcminputrc Mouse cursorSize 20
+kwriteconfig6 --file plasmarc --group Theme --key name breeze-dark
+kwriteconfig6 --file kdeglobals --group Icons --key Theme Papirus
+kwriteconfig6 --file kcminputrc --group Mouse --key cursorTheme Bibata-Modern-Classic
+kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key library org.kde.kwin.aurorae
+kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key theme __aurorae__svg__Utterly-Round-Dark
+kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnLeft "N"
+kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnRight "IAX"
+kwriteconfig6 --file auroraerc --group Utterly-Round-Dark --key ButtonSize 0
+kwriteconfig6 --file breezerc --group Common --key OutlineCloseButton true
+kwriteconfig6 --file breezerc --group Windeco --key ButtonSize ButtonSmall
+kwriteconfig6 --file breezerc --group Windeco --key DrawBorderOnMaximizedWindows true
+kwriteconfig6 --file ksplashrc --group KSplash --key Theme None
+kwriteconfig6 --file ksplashrc --group KSplash --key Engine none
+kwriteconfig6 --file kcminputrc --group Mouse --key cursorSize 20
 
-kw kwinrc Effect-overview BorderActivate 9
-kw kwinrc Plugins desktopchangeosdEnabled false
-kw kwinrc Plugins synchronizeskipswitcherEnabled false
+kwriteconfig6 --file kwinrc --group Effect-overview --key BorderActivate 9
+kwriteconfig6 --file kwinrc --group Plugins --key desktopchangeosdEnabled false
+kwriteconfig6 --file kwinrc --group Plugins --key synchronizeskipswitcherEnabled false
 
-kw kdeglobals "$fd" "Speedbar Width" 106
+kwriteconfig6 --file kdeglobals --group "$fd" --key "Speedbar Width" 106
 
-kw dolphinrc MainWindow MenuBar Disabled
-kw dolphinrc IconsMode PreviewSize 48
-kw dolphinrc "$fd" "Places Icons Auto-resize" false
-kw dolphinrc "$fd" "Places Icons Static Size" 22
+kwriteconfig6 --file dolphinrc --group MainWindow --key MenuBar Disabled
+kwriteconfig6 --file dolphinrc --group IconsMode --key PreviewSize 48
+kwriteconfig6 --file dolphinrc --group "$fd" --key "Places Icons Auto-resize" false
+kwriteconfig6 --file dolphinrc --group "$fd" --key "Places Icons Static Size" 22
 
-kw kded5rc Module-device_automounter autoload false
-kw systemsettingsrc systemsettings_sidebar_mode HighlightNonDefaultSettings true
+kwriteconfig6 --file kded5rc --group Module-device_automounter --key autoload false
+kwriteconfig6 --file systemsettingsrc --group systemsettings_sidebar_mode --key HighlightNonDefaultSettings true
 
 # Shortcuts: launcher on Meta+A (freed from "next activity") and Overview on Meta
-kw kglobalshortcutsrc plasmashell "activate application launcher" $'Meta+A\tAlt+F1,Meta\tAlt+F1,Activate Application Launcher'
-kw kglobalshortcutsrc plasmashell "next activity" "none,none,Walk through activities"
-kw kglobalshortcutsrc kwin Overview "Meta,Meta+W,Toggle Overview"
+kwriteconfig6 --file kglobalshortcutsrc --group plasmashell --key "activate application launcher" $'Meta+A\tAlt+F1,Meta\tAlt+F1,Activate Application Launcher'
+kwriteconfig6 --file kglobalshortcutsrc --group plasmashell --key "next activity" "none,none,Walk through activities"
+kwriteconfig6 --file kglobalshortcutsrc --group kwin --key Overview "Meta,Meta+W,Toggle Overview"
 
 # GTK apps: global menu, and title bar buttons on the right like the window decoration
 mkdir -p ~/.config/gtk-3.0
-kw ~/.config/gtk-3.0/settings.ini Settings gtk-modules appmenu-gtk-module
-kw ~/.config/gtk-3.0/settings.ini Settings gtk-shell-shows-menubar 1
-# kw ~/.config/gtk-3.0/settings.ini Settings gtk-decoration-layout ":minimize,maximize,close"
+kwriteconfig6 --file ~/.config/gtk-3.0/settings.ini --group Settings --key gtk-modules appmenu-gtk-module
+kwriteconfig6 --file ~/.config/gtk-3.0/settings.ini --group Settings --key gtk-shell-shows-menubar 1
 
 # Lock screen with the desktop wallpaper
 kwriteconfig6 --file kscreenlockerrc --group Greeter --group Wallpaper --group org.kde.image --group General \
