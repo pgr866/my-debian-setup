@@ -41,3 +41,15 @@ Follow these steps to deploy your Debian 13 (Trixie) environment using this repo
 * **Safety**: Ensure you have a current backup of your data before running any installation or system configuration scripts.
 * **Environment**: The repository is designed for **Debian 13 (Trixie)**. Behavior on other Debian versions or derivatives may vary.
 * **License**: Feel free to fork this repository and adapt it to your workflow. If you find improvements or have suggestions, pull requests are always welcome.
+
+
+## Hardware-realted
+
+- wifi: plasma-nm (arrastra network-manager)
+- bluetooth: bluedevil (arrastra bluez)
+- sonido: plasma-pa pipewire-audio
+- brillo: powerdevil
+- modo de energía: powerdevil power-profiles-daemon
+- no suspender nunca (apagar pantalla solamente da igual, mientras sea solo la pantalla): powerdevil
+
+Comando wget para JustBeamIt: `wget -c -O "install.sh" "https://eu.justbeamit.com:8443/download?token=e79sy"`

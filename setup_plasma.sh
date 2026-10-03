@@ -41,7 +41,8 @@ sudo apt-get install -y --no-install-recommends plasma-systemmonitor
 sudo apt-get install -y --no-install-recommends kdenlive
 
 # Install Proton VPN app with login-unlocked keyring (requires the Proton VPN .deb installed)
-sudo apt-get install -y --no-install-recommends proton-vpn-gnome-desktop libpam-gnome-keyring
+sudo apt-get install -y --no-install-recommends proton-vpn-gnome-desktop libpam-kwallet5
+# libpam-gnome-keyring
 
 # Sets up my custom desktop theme for the current user
 DATA=~/.local/share
@@ -56,7 +57,7 @@ wget -O "papirus.tar.gz" "https://github.com/PapirusDevelopmentTeam/papirus-icon
 wget -O "bibata.tar.xz" "https://github.com/ful1e5/Bibata_Cursor/releases/latest/download/Bibata-Modern-Classic.tar.xz"
 wget -O "wallpaper.png" "https://raw.githubusercontent.com/pgr866/my-debian-setup/main/wallpaper.png"
 
-rm -rf "$DATA/aurorae/themes/Utterly-Round-Dark" "$DATA/icons/Papirus" ~/.icons/Bibata-Modern-Classic
+rm -rf "$DATA/aurorae/themes/Utterly-Round-Dark" "$DATA/icons/Papirus" ~/.icons/Bibata-Modern-Classic "$DATA/wallpapers/mytheme.png"
 mkdir -p "$DATA/color-schemes" "$DATA/aurorae/themes" "$DATA/icons" "$DATA/wallpapers" ~/.icons
 cp Carl.colors "$DATA/color-schemes/"
 tar xzf utterly.tar.gz -C "$DATA/aurorae/themes" --wildcards \
@@ -72,12 +73,16 @@ rm -rf /tmp/mytheme
 kw() { kwriteconfig6 --file "$1" --group "$2" --key "$3" "$4"; }
 fd="KFileDialog Settings"
 
+kw kdeglobals KDE AnimationDurationFactor 0
+
 QT_QPA_PLATFORM=offscreen plasma-apply-colorscheme Carl
 kw plasmarc Theme name breeze-dark
 kw kdeglobals Icons Theme Papirus
 kw kcminputrc Mouse cursorTheme Bibata-Modern-Classic
 kw kwinrc org.kde.kdecoration2 library org.kde.kwin.aurorae
 kw kwinrc org.kde.kdecoration2 theme __aurorae__svg__Utterly-Round-Dark
+kw kwinrc org.kde.kdecoration2 ButtonsOnLeft "N"
+kw kwinrc org.kde.kdecoration2 ButtonsOnRight "IAX"
 kw auroraerc Utterly-Round-Dark ButtonSize 0
 kw breezerc Common OutlineCloseButton true
 kw breezerc Windeco ButtonSize ButtonSmall
@@ -162,7 +167,7 @@ panels().forEach(function (panel) { panel.remove(); });
 
 var dock = new Panel;
 dock.location = "bottom";
-dock.height = Math.round(gridUnit * 2.5);
+dock.height = 40;
 dock.hiding = "dodgewindows";
 dock.lengthMode = "fit";
 var tasks = dock.addWidget("org.kde.plasma.icontasks");
@@ -172,7 +177,7 @@ dock.addWidget("org.kde.plasma.trash");
 
 var bar = new Panel;
 bar.location = "top";
-bar.height = Math.round(gridUnit * 1.25);
+bar.height = 20;
 bar.floating = false;
 bar.addWidget("org.kde.plasma.appmenu");
 bar.addWidget("org.kde.plasma.panelspacer");
@@ -201,6 +206,4 @@ else
     printf '[Desktop Entry]\nType=Application\nName=MyTheme setup\nExec=bash %s\n' "$session_setup" \
         > ~/.config/autostart/mytheme-setup.desktop
     echo "Done. Log in to Plasma to finish: panels and wallpaper are applied on the first login."
-    # Show the login screen right away when no display manager is running yet
-    systemctl is-active --quiet display-manager || sudo systemctl start sddm
 fi
