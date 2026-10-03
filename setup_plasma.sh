@@ -46,10 +46,10 @@ sudo apt-get install -y --no-install-recommends proton-vpn-gnome-desktop
 # Install KDE Wallet PAM module for automatic keyring unlock at login
 sudo apt-get install -y --no-install-recommends libpam-kwallet5
 
-sudo apt-get install -y --no-install-recommends dconf-gsettings-backend libglib2.0-bin
-# gsettings set org.gnome.desktop.wm.preferences button-layout "menu:minimize,maximize,close"
 # kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnLeft "N"
 # kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnRight "IAX"
+# gsettings set org.gnome.desktop.wm.preferences button-layout "menu:minimize,maximize,close"
+# sudo apt-get install -y --no-install-recommends dconf-gsettings-backend libglib2.0-bin
 
 # Sets up my custom desktop theme for the current user
 DATA=~/.local/share
@@ -121,7 +121,7 @@ kw kglobalshortcutsrc kwin Overview "Meta,Meta+W,Toggle Overview"
 mkdir -p ~/.config/gtk-3.0
 kw ~/.config/gtk-3.0/settings.ini Settings gtk-modules appmenu-gtk-module
 kw ~/.config/gtk-3.0/settings.ini Settings gtk-shell-shows-menubar 1
-kw ~/.config/gtk-3.0/settings.ini Settings gtk-decoration-layout ":minimize,maximize,close"
+# kw ~/.config/gtk-3.0/settings.ini Settings gtk-decoration-layout ":minimize,maximize,close"
 
 # Lock screen with the desktop wallpaper
 kwriteconfig6 --file kscreenlockerrc --group Greeter --group Wallpaper --group org.kde.image --group General \
