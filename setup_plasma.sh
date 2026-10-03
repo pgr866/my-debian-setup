@@ -41,8 +41,15 @@ sudo apt-get install -y --no-install-recommends plasma-systemmonitor
 sudo apt-get install -y --no-install-recommends kdenlive
 
 # Install Proton VPN app with login-unlocked keyring (requires the Proton VPN .deb installed)
-sudo apt-get install -y --no-install-recommends proton-vpn-gnome-desktop libpam-kwallet5
-# libpam-gnome-keyring
+sudo apt-get install -y --no-install-recommends proton-vpn-gnome-desktop
+
+# Install KDE Wallet PAM module for automatic keyring unlock at login
+sudo apt-get install -y --no-install-recommends libpam-kwallet5
+
+sudo apt-get install -y --no-install-recommends dconf-gsettings-backend libglib2.0-bin
+# gsettings set org.gnome.desktop.wm.preferences button-layout "menu:minimize,maximize,close"
+# kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnLeft "N"
+# kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnRight "IAX"
 
 # Sets up my custom desktop theme for the current user
 DATA=~/.local/share
