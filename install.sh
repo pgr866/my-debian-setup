@@ -1,31 +1,35 @@
 #!/bin/bash
 set -e
 
+# Desktop environment to set up: plasma (default) or gnome
+# Usage: wget -qO- https://raw.githubusercontent.com/pgr866/my-debian-setup/main/install.sh | bash -s gnome
+DESKTOP="${1:-plasma}"
+case "$DESKTOP" in
+    plasma|gnome) ;;
+    *) echo "Unknown desktop '$DESKTOP'. Use: plasma or gnome" >&2; exit 1 ;;
+esac
+
+REPO="https://raw.githubusercontent.com/pgr866/my-debian-setup/main"
+
 # Define and create the local binary directory to store user scripts
 DIR="$HOME/.local/bin"
 mkdir -p "$DIR"
-cd "$DIR" || exit
+cd "$DIR"
 
-# Download utility scripts from the repository
-sudo wget -c -O clear_docker.sh "https://raw.githubusercontent.com/pgr866/my-debian-setup/main/clear_docker.sh"
-sudo wget -c -O sync_hard_drive.sh "https://raw.githubusercontent.com/pgr866/my-debian-setup/main/sync_hard_drive.sh"
-sudo wget -c -O update.sh "https://raw.githubusercontent.com/pgr866/my-debian-setup/main/update.sh"
-
-# Download the desktop wallpaper
-sudo wget -c -O "$HOME/wallpaper.png" "https://raw.githubusercontent.com/pgr866/my-debian-setup/main/wallpaper.png"
-
-# Download environment setup scripts (GNOME, NVIDIA drivers, and auto-update configuration)
-sudo wget -c -O setup_gnome.sh "https://raw.githubusercontent.com/pgr866/my-debian-setup/main/setup_gnome.sh"
-sudo wget -c -O setup_nvidia_driver.sh "https://raw.githubusercontent.com/pgr866/my-debian-setup/main/setup_nvidia_driver.sh"
-sudo wget -c -O setup_packages.sh "https://raw.githubusercontent.com/pgr866/my-debian-setup/main/setup_packages.sh"
+# Download utility and setup scripts, replacing old copies
+for script in clear_docker.sh sync_hard_drive.sh update.sh \
+    setup_packages.sh "setup_$DESKTOP.sh" setup_nvidia_driver.sh; do
+    rm -f "$script"
+    wget -O "$script" "$REPO/$script"
+done
 
 # Grant execution permissions to all downloaded scripts
-sudo chmod +x ./*.sh
+chmod +x ./*.sh
 
 # Run the primary configuration and setup scripts
-bash setup_gnome.sh
-bash setup_nvidia_driver.sh
 bash setup_packages.sh
+bash "setup_$DESKTOP.sh"
+bash setup_nvidia_driver.sh
 
 # Append PATH to .bashrc and .zshrc if not already present
 grep -qF 'export PATH="$HOME/.local/bin:$PATH"' "$HOME/.bashrc" || echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"

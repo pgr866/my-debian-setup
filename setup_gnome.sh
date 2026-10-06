@@ -1,12 +1,42 @@
 #!/bin/bash
 set -e
 
-# Install GNOME minimal setup
-sudo apt-get install -y --no-install-recommends gnome-shell gnome-session gnome-terminal gnome-control-center nautilus gdm3
+# Minimal GNOME: desktop, login manager, settings, file manager and terminal
+sudo apt-get install -y --no-install-recommends gnome-shell gnome-session gdm3 gnome-control-center nautilus gnome-terminal
 
-# Setup desktop preferences
-gsettings set org.gnome.desktop.wm.preferences button-layout "appmenu:minimize,maximize,close"
-gsettings set org.gnome.desktop.wm.keybindings show-desktop "['<Super>d']"
+# Install image format support (HEIF, WebP, AVIF)
+sudo apt-get install -y --no-install-recommends heif-gdk-pixbuf webp-pixbuf-loader libavif-gdk-pixbuf
+
+# Install video codecs
+sudo apt-get install -y --no-install-recommends gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-libav
+
+# Install image thumbnails
+sudo apt-get install -y --no-install-recommends libgdk-pixbuf2.0-bin
+
+# Install video thumbnails
+sudo apt-get install -y --no-install-recommends ffmpegthumbnailer
+
+# Install image viewer
+sudo apt-get install -y --no-install-recommends loupe
+
+# Install video player
+sudo apt-get install -y --no-install-recommends showtime
+
+# Install disk utility: partitions and bootable USB creator
+sudo apt-get install -y --no-install-recommends gnome-disk-utility
+
+# Setup Wi-Fi
+sudo apt-get install -y --no-install-recommends network-manager-gnome
+echo -e "auto lo\niface lo inet loopback" | sudo tee /etc/network/interfaces
+sudo sed -i 's/managed=false/managed=true/g' /etc/NetworkManager/NetworkManager.conf
+# Disable Wi-Fi Power Saving (fixes suspend bug)
+mkdir -p /etc/modprobe.d
+echo "options rtw88_core disable_lps_deep=y" | sudo tee /etc/modprobe.d/rtw88.conf
+mkdir -p /etc/NetworkManager/conf.d
+echo -e "[connection]\nwifi.powersave = 2" | sudo tee /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
+
+# Tun off Bluetooth
+bluetoothctl power off
 
 # Disable Automatic Screen Blank
 gsettings set org.gnome.desktop.session idle-delay 0
@@ -14,6 +44,10 @@ gsettings set org.gnome.desktop.session idle-delay 0
 # Disable Automatic Suspend
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 'nothing'
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+
+# Setup desktop preferences
+gsettings set org.gnome.desktop.wm.keybindings show-desktop "['<Super>d']"
+gsettings set org.gnome.desktop.wm.preferences button-layout "appmenu:minimize,maximize,close"
 
 # Set desktop wallpaper
 WALLPAPER="$HOME/wallpaper.png"
@@ -25,21 +59,8 @@ fi
 # Enable dark mode
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
-# Disable Bluetooth
-bluetoothctl power off
-
-# Enable Network Manager for GNOME
-sudo apt-get install -y network-manager-gnome
-echo -e "auto lo\niface lo inet loopback" | sudo tee /etc/network/interfaces
-sudo sed -i 's/managed=false/managed=true/g' /etc/NetworkManager/NetworkManager.conf
-# Disable Wi-Fi Power Saving (fixes suspend bug)
-mkdir -p /etc/modprobe.d
-echo "options rtw88_core disable_lps_deep=y" | sudo tee /etc/modprobe.d/rtw88.conf
-mkdir -p /etc/NetworkManager/conf.d
-echo -e "[connection]\nwifi.powersave = 2" | sudo tee /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
-
 # Install GNOME extensions
-sudo apt-get install -y git gnome-shell-extension-dash-to-dock gnome-shell-extension-desktop-icons-ng gnome-shell-extension-appindicator
+sudo apt-get install -y --no-install-recommends git gnome-shell-extension-dash-to-dock gnome-shell-extension-desktop-icons-ng gnome-shell-extension-appindicator
 EXT_PATH="$HOME/.local/share/gnome-shell/extensions"
 mkdir -p "$EXT_PATH"
 if [ ! -d "$EXT_PATH/clipboard-indicator@tudmotu.com" ]; then
