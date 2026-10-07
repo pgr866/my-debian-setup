@@ -7,7 +7,7 @@ sudo apt-get update
 sudo apt-get dist-upgrade -y
 
 # Install miscellaneous tools and applications
-sudo apt-get install -y --no-install-recommends fastfetch git curl unzip exfatprogs power-profiles-daemon gimp audacity openshot-qt
+sudo apt-get install -y --no-install-recommends fastfetch git curl unzip exfatprogs power-profiles-daemon gimp audacity openshot-qt gnome-boxes qemu-system-modules-spice qemu-utils
 
 # Minimal OBS Studio installation
 sudo apt-get install -y --no-install-recommends obs-studio obs-plugins qtwayland5 libva-wayland2
