@@ -33,6 +33,9 @@ sudo apt-get install -y --no-install-recommends gwenview
 # Install video player
 sudo apt-get install -y --no-install-recommends haruna
 
+# Install archive manager
+sudo apt-get install -y --no-install-recommends ark
+
 # Install partition manager
 sudo apt-get install -y --no-install-recommends partitionmanager
 
