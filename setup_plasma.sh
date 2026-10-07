@@ -186,6 +186,9 @@ for variant in $variants; do
     zcat -f "$system_themes/default/$variant/panel-background.svg"* |
         sed 's/currentColor/#000000/g' > "$user_theme/$variant/panel-background.svg"
 done
+sed -i 's/#000000/transparent/g; s/stop-opacity:[.0-9]*/stop-opacity:0/g' "$user_theme"/{,translucent/}widgets/panel-background.svg
+kwriteconfig6 --file "$user_theme/plasmarc" --group ContrastEffect --key enabled false
+kwriteconfig6 --file "$user_theme/plasmarc" --group BlurBehindEffect --key enabled false
 
 # Panels and wallpaper: applied now if Plasma is running, otherwise at the first login
 session_setup=$DATA/mytheme/session-setup.sh
