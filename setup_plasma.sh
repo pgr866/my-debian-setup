@@ -221,7 +221,7 @@ dock.hiding = "dodgewindows";
 dock.lengthMode = "fit";
 var tasks = dock.addWidget("org.kde.plasma.icontasks");
 tasks.currentConfigGroup = ["General"];
-tasks.writeConfig("launchers", "preferred://filemanager,applications:org.kde.konsole.desktop");
+tasks.writeConfig("launchers", "applications:brave-browser.desktop,preferred://filemanager,applications:org.kde.konsole.desktop,applications:com.microsoft.VSCode.desktop,applications:spotify.desktop");
 dock.addWidget("org.kde.plasma.trash");
 
 var bar = new Panel;
@@ -244,6 +244,16 @@ kicker.writeConfig("showRecentApps", "false");
 kicker.writeConfig("showRecentDocs", "false");
 kicker.writeConfig("useExtraRunners", "false");
 '
+
+# Launcher favorites: only System Settings, added first because a launcher fills an empty list with its defaults
+favorites() {
+    dbus-send --session --type=method_call --dest=org.kde.ActivityManager /ActivityManager/Resources/Linking \
+        org.kde.ActivityManager.ResourcesLinking."$1" string:org.kde.plasma.favorites.applications string:"$2" string::global
+}
+favorites LinkResourceToActivity applications:systemsettings.desktop
+for resource in $(python3 -c "import os, sqlite3; [print(r) for r, in sqlite3.connect('file:' + os.path.expanduser('~/.local/share/kactivitymanagerd/resources/database') + '?mode=ro', uri=True).execute(\"SELECT targettedResource FROM ResourceLink WHERE initiatingAgent = 'org.kde.plasma.favorites.applications' AND usedActivity = ':global' AND targettedResource != 'applications:systemsettings.desktop'\")]"); do
+    favorites UnlinkResourceFromActivity "$resource"
+done
 EOF
 
 if pgrep -u "$USER" -x plasmashell >/dev/null; then
