@@ -23,6 +23,10 @@ for script in clear_docker.sh sync_hard_drive.sh update.sh \
     wget -O "$script" "$REPO/$script"
 done
 
+# Download the desktop wallpaper
+mkdir -p "$HOME/.local/share/wallpapers"
+wget -O "$HOME/.local/share/wallpapers/wallpaper.png" "$REPO/wallpaper.png"
+
 # Grant execution permissions to all downloaded scripts
 chmod +x ./*.sh
 

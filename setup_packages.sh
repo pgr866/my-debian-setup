@@ -48,6 +48,18 @@ echo "deb https://repository.spotify.com stable non-free" | sudo tee /etc/apt/so
 sudo apt-get update
 sudo mkdir -p /usr/share/desktop-directories # its installer needs this folder to add the menu entry
 sudo apt-get install -y spotify-client
+# Add Spotify Desktop Shortcut, the desktop does not show it automatically
+mkdir -p ~/.local/share/applications
+cat << 'EOF' > ~/.local/share/applications/spotify.desktop
+[Desktop Entry]
+Name=Spotify
+Exec=spotify
+Terminal=false
+Type=Application
+Icon=spotify-client
+Categories=AudioVideo;Audio;Player;
+MimeType=x-scheme-handler/spotify;
+EOF
 
 # Install Zsh and Oh My Zsh
 sudo apt-get install -y zsh

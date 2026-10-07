@@ -4,10 +4,10 @@ set -e
 # Minimal KDE Plasma: desktop, login manager, settings, file manager and terminal
 sudo apt-get install -y --no-install-recommends plasma-desktop sddm systemsettings dolphin konsole
 
-# Install KDE Wallet PAM module for automatic keyring unlock at login, and the crypto plugins its Secret Service needs
+# Install KDE Wallet PAM module and plugins for automatic keyring unlock at login
 sudo apt-get install -y --no-install-recommends libpam-kwallet5 libqca-qt6-plugins
 
-# Serve app secrets from KWallet instead of gnome-keyring (pulled in by Proton VPN), which is not unlocked at login
+# Use KWallet instead of GNOME Keyring for app passwords
 systemctl --user mask gnome-keyring-daemon.socket gnome-keyring-daemon.service
 printf '[D-BUS Service]\nName=org.freedesktop.secrets\nExec=/usr/bin/kwalletd6\n' |
     install -Dm644 /dev/stdin ~/.local/share/dbus-1/services/org.freedesktop.secrets.service
@@ -86,25 +86,12 @@ sudo apt-get install -y --no-install-recommends powerdevil
 # Setup battery status
 sudo apt-get install -y --no-install-recommends upower
 
-# Disable automatic suspend, screen dimming and screen off on inactivity
+# Disable automatic suspend and screen off on inactivity
 for profile in AC Battery LowBattery; do
     kwriteconfig6 --file powerdevilrc --group $profile --group SuspendAndShutdown --key AutoSuspendAction 0
     kwriteconfig6 --file powerdevilrc --group $profile --group Display --key DimDisplayWhenIdle false
     kwriteconfig6 --file powerdevilrc --group $profile --group Display --key TurnOffDisplayWhenIdle false
 done
-
-# Add Spotify Desktop Shortcut, KDE Plasma does not show it automatically
-mkdir -p ~/.local/share/applications
-cat << 'EOF' > ~/.local/share/applications/spotify.desktop
-[Desktop Entry]
-Name=Spotify
-Exec=spotify
-Terminal=false
-Type=Application
-Icon=spotify-client
-Categories=AudioVideo;Audio;Player;
-MimeType=x-scheme-handler/spotify;
-EOF
 
 # Sets up my custom desktop theme for the current user
 DATA=~/.local/share
@@ -117,16 +104,14 @@ wget -O "Carl.colors" "https://gitlab.com/jomada/carl/-/raw/HEAD/color-schemes/C
 wget -O "utterly.tar.gz" "https://github.com/HimDek/Utterly-Round-Plasma-Style/archive/HEAD.tar.gz"
 wget -O "papirus.tar.gz" "https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/archive/HEAD.tar.gz"
 wget -O "bibata.tar.xz" "https://github.com/ful1e5/Bibata_Cursor/releases/latest/download/Bibata-Modern-Classic.tar.xz"
-wget -O "wallpaper.png" "https://raw.githubusercontent.com/pgr866/my-debian-setup/main/wallpaper.png"
 
-rm -rf "$DATA/aurorae/themes/Utterly-Round-Dark" "$DATA/icons/Papirus" ~/.icons/Bibata-Modern-Classic "$DATA/wallpapers/mytheme.png"
-mkdir -p "$DATA/color-schemes" "$DATA/aurorae/themes" "$DATA/icons" "$DATA/wallpapers" ~/.icons
+rm -rf "$DATA/aurorae/themes/Utterly-Round-Dark" "$DATA/icons/Papirus" ~/.icons/Bibata-Modern-Classic
+mkdir -p "$DATA/color-schemes" "$DATA/aurorae/themes" "$DATA/icons" ~/.icons
 cp Carl.colors "$DATA/color-schemes/"
 tar xzf utterly.tar.gz -C "$DATA/aurorae/themes" --wildcards \
     --transform 's|^.*/aurorae/dark/translucent|Utterly-Round-Dark|' '*/aurorae/dark/translucent'
 tar xzf papirus.tar.gz -C "$DATA/icons" --wildcards --strip-components=1 '*/Papirus'
 tar xJf bibata.tar.xz -C ~/.icons
-cp wallpaper.png "$DATA/wallpapers/mytheme.png"
 
 cd ~
 rm -rf /tmp/mytheme
@@ -156,7 +141,7 @@ kwriteconfig6 --file dolphinrc --group "$fd" --key "Places Icons Static Size" 22
 
 kwriteconfig6 --file systemsettingsrc --group systemsettings_sidebar_mode --key HighlightNonDefaultSettings true
 
-# Session: start empty at login instead of reopening the apps that were open at shutdown
+# Start with an empty session at login
 kwriteconfig6 --file ksmserverrc --group General --key loginMode emptySession
 
 # Shortcuts: launcher on Meta+A (freed from "next activity") and Overview on Meta
@@ -172,15 +157,15 @@ kwriteconfig6 --file ~/.config/gtk-3.0/settings.ini --group Settings --key gtk-s
 # Lock screen: no automatic lock on inactivity, and the desktop wallpaper
 kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock false
 kwriteconfig6 --file kscreenlockerrc --group Greeter --group Wallpaper --group org.kde.image --group General \
-    --key Image "file://$DATA/wallpapers/mytheme.png"
+    --key Image "file://$DATA/wallpapers/wallpaper.png"
 
 # Login screen (SDDM): Breeze theme, same look as the lock screen, with the desktop wallpaper.
 sudo apt-get install -y --no-install-recommends sddm-theme-breeze
-sudo install -Dm644 "$DATA/wallpapers/mytheme.png" /usr/local/share/wallpapers/mytheme.png
-printf '[General]\nbackground=/usr/local/share/wallpapers/mytheme.png\n' |
+sudo install -Dm644 "$DATA/wallpapers/wallpaper.png" /usr/local/share/wallpapers/wallpaper.png
+printf '[General]\nbackground=/usr/local/share/wallpapers/wallpaper.png\n' |
     sudo tee /usr/share/sddm/themes/breeze/theme.conf.user >/dev/null
 
-# Breeze Dark panels for the current user: black when a window touches them, transparent otherwise
+# Makes the Breeze Dark panels transparent, black only when a window is maximized
 system_themes=/usr/share/plasma/desktoptheme
 user_theme=~/.local/share/plasma/desktoptheme/breeze-dark
 variants="widgets solid/widgets translucent/widgets"
@@ -207,7 +192,7 @@ rm -rf ~/.config/autostart/mytheme-setup.desktop ~/.local/share/mytheme
 # Apply window button layout for GTK apps
 python3 -c "from gi.repository import Gio;Gio.Settings.new('org.gnome.desktop.wm.preferences').set_string('button-layout','menu:minimize,maximize,close');Gio.Settings.sync()"
 
-# Restart plasmashell so it reloads the Plasma style, icons and panel backgrounds
+# Restart plasmashell so it reloads the Plasma style, icons and panels
 rm -rf ~/.cache/ksvg-elements* ~/.cache/plasma_theme_*
 systemctl --user restart plasma-plasmashell
 dbus-send --session --type=method_call --dest=org.kde.KWin /KWin org.kde.KWin.reconfigure
@@ -217,7 +202,7 @@ dbus-send --session --type=method_call --print-reply=literal --dest=org.kde.plas
     /PlasmaShell org.kde.PlasmaShell.evaluateScript string:'
 desktops().forEach(function (desktop) {
     desktop.currentConfigGroup = ["Wallpaper", "org.kde.image", "General"];
-    desktop.writeConfig("Image", "file://" + userDataPath() + "/.local/share/wallpapers/mytheme.png");
+    desktop.writeConfig("Image", "file://" + userDataPath() + "/.local/share/wallpapers/wallpaper.png");
 });
 
 panels().forEach(function (panel) { panel.remove(); });
@@ -253,7 +238,7 @@ kicker.writeConfig("showRecentDocs", "false");
 kicker.writeConfig("useExtraRunners", "false");
 '
 
-# Launcher favorites: only System Settings, added first because a launcher fills an empty list with its defaults
+# Launcher favorites: only System Settings
 favorites() {
     dbus-send --session --type=method_call --dest=org.kde.ActivityManager /ActivityManager/Resources/Linking \
         org.kde.ActivityManager.ResourcesLinking."$1" string:org.kde.plasma.favorites.applications string:"$2" string::global

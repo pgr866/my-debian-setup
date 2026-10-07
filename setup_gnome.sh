@@ -44,7 +44,7 @@ echo "options rtw88_core disable_lps_deep=y" | sudo tee /etc/modprobe.d/rtw88.co
 sudo mkdir -p /etc/NetworkManager/conf.d
 echo -e "[connection]\nwifi.powersave = 2" | sudo tee /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
 
-# Tun off Bluetooth
+# Turn off Bluetooth
 bluetoothctl power off
 
 # Disable Automatic Screen Blank
@@ -59,11 +59,12 @@ gsettings set org.gnome.desktop.wm.keybindings show-desktop "['<Super>d']"
 gsettings set org.gnome.desktop.wm.preferences button-layout "appmenu:minimize,maximize,close"
 
 # Set desktop wallpaper
-WALLPAPER="$HOME/wallpaper.png"
-if [ -f "$WALLPAPER" ]; then
-    gsettings set org.gnome.desktop.background picture-uri "file://$WALLPAPER"
-    gsettings set org.gnome.desktop.background picture-uri-dark "file://$WALLPAPER"
-fi
+WALLPAPER="$HOME/.local/share/wallpapers/wallpaper.png"
+gsettings set org.gnome.desktop.background picture-uri "file://$WALLPAPER"
+gsettings set org.gnome.desktop.background picture-uri-dark "file://$WALLPAPER"
+
+# Set dock favorite apps
+gsettings set org.gnome.shell favorite-apps "['brave-browser.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'com.microsoft.VSCode.desktop', 'spotify.desktop']"
 
 # Enable dark mode
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
