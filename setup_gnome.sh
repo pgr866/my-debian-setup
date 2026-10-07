@@ -16,6 +16,9 @@ sudo apt-get install -y --no-install-recommends libgdk-pixbuf2.0-bin
 # Install video thumbnails
 sudo apt-get install -y --no-install-recommends ffmpegthumbnailer
 
+# Install PDF viewer and thumbnails
+sudo apt-get install -y --no-install-recommends papers
+
 # Install image viewer
 sudo apt-get install -y --no-install-recommends loupe
 
@@ -24,6 +27,9 @@ sudo apt-get install -y --no-install-recommends showtime
 
 # Install disk utility: partitions and bootable USB creator
 sudo apt-get install -y --no-install-recommends gnome-disk-utility
+
+# Install system monitor
+sudo apt-get install -y --no-install-recommends gnome-system-monitor
 
 # Setup Wi-Fi
 sudo apt-get install -y --no-install-recommends network-manager-gnome
