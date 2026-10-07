@@ -58,10 +58,12 @@ gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'no
 gsettings set org.gnome.desktop.wm.keybindings show-desktop "['<Super>d']"
 gsettings set org.gnome.desktop.wm.preferences button-layout "appmenu:minimize,maximize,close"
 
-# Set desktop wallpaper
+# Set desktop wallpaper, if one was chosen
 WALLPAPER="$HOME/.local/share/wallpapers/wallpaper.png"
-gsettings set org.gnome.desktop.background picture-uri "file://$WALLPAPER"
-gsettings set org.gnome.desktop.background picture-uri-dark "file://$WALLPAPER"
+if [ -f "$WALLPAPER" ]; then
+    gsettings set org.gnome.desktop.background picture-uri "file://$WALLPAPER"
+    gsettings set org.gnome.desktop.background picture-uri-dark "file://$WALLPAPER"
+fi
 
 # Set dock favorite apps
 gsettings set org.gnome.shell favorite-apps "['brave-browser.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'com.microsoft.VSCode.desktop', 'spotify.desktop']"

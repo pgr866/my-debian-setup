@@ -157,16 +157,21 @@ sudo apt-get install -y --no-install-recommends appmenu-gtk3-module
 kwriteconfig6 --file ~/.config/gtk-3.0/settings.ini --group Settings --key gtk-modules appmenu-gtk-module
 kwriteconfig6 --file ~/.config/gtk-3.0/settings.ini --group Settings --key gtk-shell-shows-menubar 1
 
-# Lock screen: no automatic lock on inactivity, and the desktop wallpaper
+# Lock screen: no automatic lock on inactivity
 kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock false
-kwriteconfig6 --file kscreenlockerrc --group Greeter --group Wallpaper --group org.kde.image --group General \
-    --key Image "file://$DATA/wallpapers/wallpaper.png"
 
-# Login screen (SDDM): Breeze theme, same look as the lock screen, with the desktop wallpaper.
+# Login screen (SDDM): Breeze theme, same look as the lock screen
 sudo apt-get install -y --no-install-recommends sddm-theme-breeze
-sudo install -Dm644 "$DATA/wallpapers/wallpaper.png" /usr/local/share/wallpapers/wallpaper.png
-printf '[General]\nbackground=/usr/local/share/wallpapers/wallpaper.png\n' |
-    sudo tee /usr/share/sddm/themes/breeze/theme.conf.user >/dev/null
+
+# Lock and login screens: the desktop wallpaper, if one was chosen
+wallpaper=$DATA/wallpapers/wallpaper.png
+if [ -f "$wallpaper" ]; then
+    kwriteconfig6 --file kscreenlockerrc --group Greeter --group Wallpaper --group org.kde.image --group General \
+        --key Image "file://$wallpaper"
+    sudo install -Dm644 "$wallpaper" /usr/local/share/wallpapers/wallpaper.png
+    printf '[General]\nbackground=/usr/local/share/wallpapers/wallpaper.png\n' |
+        sudo tee /usr/share/sddm/themes/breeze/theme.conf.user >/dev/null
+fi
 
 # Makes the Breeze Dark panels transparent, black only when a window is maximized
 system_themes=/usr/share/plasma/desktoptheme
@@ -200,14 +205,14 @@ rm -rf ~/.cache/ksvg-elements* ~/.cache/plasma_theme_*
 systemctl --user restart plasma-plasmashell
 dbus-send --session --type=method_call --dest=org.kde.KWin /KWin org.kde.KWin.reconfigure
 
-# Wallpaper, bottom dock and top bar
+# Desktop wallpaper, if one was chosen
+if [ -f ~/.local/share/wallpapers/wallpaper.png ]; then
+    plasma-apply-wallpaperimage ~/.local/share/wallpapers/wallpaper.png
+fi
+
+# Bottom dock and top bar
 dbus-send --session --type=method_call --print-reply=literal --dest=org.kde.plasmashell \
     /PlasmaShell org.kde.PlasmaShell.evaluateScript string:'
-desktops().forEach(function (desktop) {
-    desktop.currentConfigGroup = ["Wallpaper", "org.kde.image", "General"];
-    desktop.writeConfig("Image", "file://" + userDataPath() + "/.local/share/wallpapers/wallpaper.png");
-});
-
 panels().forEach(function (panel) { panel.remove(); });
 
 var dock = new Panel;
