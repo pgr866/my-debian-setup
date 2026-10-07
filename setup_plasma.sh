@@ -127,8 +127,6 @@ rm -rf /tmp/mytheme
 # Settings: look and feel, window behavior, Dolphin and file dialogs
 fd="KFileDialog Settings"
 
-kwriteconfig6 --file kdeglobals --group KDE --key AnimationDurationFactor 0
-
 QT_QPA_PLATFORM=offscreen plasma-apply-colorscheme Carl
 kwriteconfig6 --file plasmarc --group Theme --key name breeze-dark
 kwriteconfig6 --file kdeglobals --group Icons --key Theme Papirus
@@ -150,6 +148,9 @@ kwriteconfig6 --file dolphinrc --group "$fd" --key "Places Icons Auto-resize" fa
 kwriteconfig6 --file dolphinrc --group "$fd" --key "Places Icons Static Size" 22
 
 kwriteconfig6 --file systemsettingsrc --group systemsettings_sidebar_mode --key HighlightNonDefaultSettings true
+
+# Session: start empty at login instead of reopening the apps that were open at shutdown
+kwriteconfig6 --file ksmserverrc --group General --key loginMode emptySession
 
 # Shortcuts: launcher on Meta+A (freed from "next activity") and Overview on Meta
 kwriteconfig6 --file kglobalshortcutsrc --group plasmashell --key "activate application launcher" $'Meta+A\tAlt+F1,Meta\tAlt+F1,Activate Application Launcher'
