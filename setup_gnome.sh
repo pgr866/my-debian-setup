@@ -4,6 +4,9 @@ set -e
 # Minimal GNOME: desktop, login manager, settings, file manager and terminal
 sudo apt-get install -y --no-install-recommends gnome-shell gnome-session gdm3 gnome-control-center nautilus gnome-terminal
 
+# Install GNOME Keyring PAM module for automatic keyring unlock at login
+sudo apt-get install -y --no-install-recommends gnome-keyring libpam-gnome-keyring
+
 # Install image format support (HEIF, WebP, AVIF)
 sudo apt-get install -y --no-install-recommends heif-gdk-pixbuf webp-pixbuf-loader libavif-gdk-pixbuf
 
@@ -36,9 +39,9 @@ sudo apt-get install -y --no-install-recommends network-manager-gnome
 echo -e "auto lo\niface lo inet loopback" | sudo tee /etc/network/interfaces
 sudo sed -i 's/managed=false/managed=true/g' /etc/NetworkManager/NetworkManager.conf
 # Disable Wi-Fi Power Saving (fixes suspend bug)
-mkdir -p /etc/modprobe.d
+sudo mkdir -p /etc/modprobe.d
 echo "options rtw88_core disable_lps_deep=y" | sudo tee /etc/modprobe.d/rtw88.conf
-mkdir -p /etc/NetworkManager/conf.d
+sudo mkdir -p /etc/NetworkManager/conf.d
 echo -e "[connection]\nwifi.powersave = 2" | sudo tee /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
 
 # Tun off Bluetooth
@@ -75,10 +78,10 @@ else
   git -C "$EXT_PATH/clipboard-indicator@tudmotu.com" pull
 fi
 
-echo "\n----------IMPORTANT (ONLY FIRST TIME)----------\n"
+echo -e "\n----------IMPORTANT (ONLY FIRST TIME)----------\n"
 echo "Restart your system and enable the GNOME extensions via the Extensions app, or by running the following commands:"
 echo "gnome-extensions enable dash-to-dock@micxgx.gmail.com"
 echo "gnome-extensions enable ding@rastersoft.com"
 echo "gnome-extensions enable ubuntu-appindicators@ubuntu.com"
 echo "gnome-extensions enable clipboard-indicator@tudmotu.com"
-echo "\n-----------------------------------------------\n"
+echo -e "\n-----------------------------------------------\n"

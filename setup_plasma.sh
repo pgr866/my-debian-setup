@@ -4,8 +4,13 @@ set -e
 # Minimal KDE Plasma: desktop, login manager, settings, file manager and terminal
 sudo apt-get install -y --no-install-recommends plasma-desktop sddm systemsettings dolphin konsole
 
-# Install KDE Wallet PAM module for automatic keyring unlock at login
-sudo apt-get install -y --no-install-recommends libpam-kwallet5
+# Install KDE Wallet PAM module for automatic keyring unlock at login, and the crypto plugins its Secret Service needs
+sudo apt-get install -y --no-install-recommends libpam-kwallet5 libqca-qt6-plugins
+
+# Serve app secrets from KWallet instead of gnome-keyring (pulled in by Proton VPN), which is not unlocked at login
+systemctl --user mask gnome-keyring-daemon.socket gnome-keyring-daemon.service
+printf '[D-BUS Service]\nName=org.freedesktop.secrets\nExec=/usr/bin/kwalletd6\n' |
+    install -Dm644 /dev/stdin ~/.local/share/dbus-1/services/org.freedesktop.secrets.service
 
 # Install KDE default monospace font, Hack
 sudo apt-get install -y --no-install-recommends fonts-hack
@@ -81,10 +86,12 @@ sudo apt-get install -y --no-install-recommends powerdevil
 # Setup battery status
 sudo apt-get install -y --no-install-recommends upower
 
-# Disable automatic suspend on inactivity
-kwriteconfig6 --file powerdevilrc --group AC --group SuspendAndShutdown --key AutoSuspendAction 0
-kwriteconfig6 --file powerdevilrc --group Battery --group SuspendAndShutdown --key AutoSuspendAction 0
-kwriteconfig6 --file powerdevilrc --group LowBattery --group SuspendAndShutdown --key AutoSuspendAction 0
+# Disable automatic suspend, screen dimming and screen off on inactivity
+for profile in AC Battery LowBattery; do
+    kwriteconfig6 --file powerdevilrc --group $profile --group SuspendAndShutdown --key AutoSuspendAction 0
+    kwriteconfig6 --file powerdevilrc --group $profile --group Display --key DimDisplayWhenIdle false
+    kwriteconfig6 --file powerdevilrc --group $profile --group Display --key TurnOffDisplayWhenIdle false
+done
 
 # Add Spotify Desktop Shortcut, KDE Plasma does not show it automatically
 mkdir -p ~/.local/share/applications
