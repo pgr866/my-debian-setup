@@ -4,21 +4,18 @@ set -e
 # Define source, destination, and configuration paths
 SOURCE="/media/$USER/HARDDRIVE"
 DESTINATION="google_drive:HARDDRIVE"
-CONFIG_DIR="$HOME/.config/rclone"
-CONFIG_FILE="$CONFIG_DIR/rclone.conf"
-CONFIG_BACKUP="$SOURCE/rclone.conf"
+CONFIG_FILE="$SOURCE/rclone.conf"
 
 # Verify if the hard drive is mounted before proceeding
 if mountpoint -q "$SOURCE"; then
-  # Check if rclone configuration exists; if not, restore it from the backup on the hard drive
+  # Verify the rclone configuration exists on the hard drive
   if [ ! -f "$CONFIG_FILE" ]; then
-    echo "Rclone config not found in system. Restoring from drive..."
-    mkdir -p "$CONFIG_DIR"
-    cp "$CONFIG_BACKUP" "$CONFIG_FILE"
+    echo "Error: Rclone config not found at $CONFIG_FILE"
+    exit 1
   fi
 
   # Sync the local hard drive directory with the remote Google Drive destination
-  rclone sync "$SOURCE" "$DESTINATION" --progress
+  rclone sync "$SOURCE" "$DESTINATION" --config "$CONFIG_FILE" --progress
 else
   # Exit with an error message if the mount point is not detected
   echo "Error: Drive not mounted at $SOURCE"
