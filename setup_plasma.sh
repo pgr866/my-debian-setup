@@ -138,7 +138,6 @@ kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key theme __aurorae__
 kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnLeft "N"
 kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnRight "IAX"
 kwriteconfig6 --file auroraerc --group Utterly-Round-Dark --key ButtonSize 0
-kwriteconfig6 --file ksplashrc --group KSplash --key Theme None
 kwriteconfig6 --file ksplashrc --group KSplash --key Engine none
 kwriteconfig6 --file kcminputrc --group Mouse --key cursorSize 20
 
@@ -150,7 +149,6 @@ kwriteconfig6 --file dolphinrc --group IconsMode --key PreviewSize 48
 kwriteconfig6 --file dolphinrc --group "$fd" --key "Places Icons Auto-resize" false
 kwriteconfig6 --file dolphinrc --group "$fd" --key "Places Icons Static Size" 22
 
-kwriteconfig6 --file kded5rc --group Module-device_automounter --key autoload false
 kwriteconfig6 --file systemsettingsrc --group systemsettings_sidebar_mode --key HighlightNonDefaultSettings true
 
 # Shortcuts: launcher on Meta+A (freed from "next activity") and Overview on Meta
@@ -174,10 +172,10 @@ sudo install -Dm644 "$DATA/wallpapers/mytheme.png" /usr/local/share/wallpapers/m
 printf '[General]\nbackground=/usr/local/share/wallpapers/mytheme.png\n' |
     sudo tee /usr/share/sddm/themes/breeze/theme.conf.user >/dev/null
 
-# Makes the Breeze Dark panels black by overriding the panel background for the current user
+# Breeze Dark panels for the current user: black when a window touches them, transparent otherwise
 system_themes=/usr/share/plasma/desktoptheme
 user_theme=~/.local/share/plasma/desktoptheme/breeze-dark
-variants="widgets opaque/widgets solid/widgets translucent/widgets"
+variants="widgets solid/widgets translucent/widgets"
 rm -rf "$user_theme"
 mkdir -p "$user_theme"
 cp -r "$system_themes/breeze-dark/." "$user_theme"
@@ -201,7 +199,7 @@ rm -rf ~/.config/autostart/mytheme-setup.desktop ~/.local/share/mytheme
 # Apply window button layout for GTK apps
 python3 -c "from gi.repository import Gio;Gio.Settings.new('org.gnome.desktop.wm.preferences').set_string('button-layout','menu:minimize,maximize,close');Gio.Settings.sync()"
 
-# Restart plasmashell so it reloads the Plasma style, icons and black panels
+# Restart plasmashell so it reloads the Plasma style, icons and panel backgrounds
 rm -rf ~/.cache/ksvg-elements* ~/.cache/plasma_theme_*
 systemctl --user restart plasma-plasmashell
 dbus-send --session --type=method_call --dest=org.kde.KWin /KWin org.kde.KWin.reconfigure
@@ -238,8 +236,7 @@ bar.addWidget("org.kde.plasma.panelspacer");
 var systray = bar.addWidget("org.kde.plasma.systemtray");
 var tray = desktopById(systray.readConfig("SystrayContainmentId"));
 tray.currentConfigGroup = ["General"];
-tray.writeConfig("extraItems", "org.kde.plasma.keyboardlayout,org.kde.plasma.cameraindicator,org.kde.plasma.clipboard,org.kde.plasma.mediacontroller,org.kde.plasma.devicenotifier,org.kde.plasma.manage-inputmethod");
-tray.writeConfig("knownItems", "org.kde.plasma.keyboardlayout,org.kde.plasma.cameraindicator,org.kde.plasma.clipboard,org.kde.plasma.mediacontroller,org.kde.plasma.notifications,org.kde.plasma.devicenotifier,org.kde.plasma.manage-inputmethod");
+tray.writeConfig("knownItems", "org.kde.plasma.notifications");
 var kicker = bar.addWidget("org.kde.plasma.kicker");
 kicker.currentConfigGroup = ["General"];
 kicker.writeConfig("alignResultsToBottom", "false");
