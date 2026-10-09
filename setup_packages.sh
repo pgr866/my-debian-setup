@@ -6,10 +6,28 @@ cd /tmp
 sudo apt-get update
 sudo apt-get dist-upgrade -y
 
-# Install miscellaneous tools and applications
-sudo apt-get install -y --no-install-recommends fastfetch git curl unzip exfatprogs power-profiles-daemon gimp audacity openshot-qt gnome-boxes qemu-system-modules-spice qemu-utils
+# Install basic command-line tools
+sudo apt-get install -y --no-install-recommends fastfetch git curl unzip
 
-# Minimal OBS Studio installation
+# Install exFAT support
+sudo apt-get install -y --no-install-recommends exfatprogs
+
+# Install energy profiles
+sudo apt-get install -y --no-install-recommends power-profiles-daemon
+
+# Install image editor GIMP
+sudo apt-get install -y --no-install-recommends gimp
+
+# Install audio editor Audacity
+sudo apt-get install -y --no-install-recommends audacity
+
+# Install video editor OpenShot
+sudo apt-get install -y --no-install-recommends openshot-qt
+
+# Install virtual machine manager
+sudo apt-get install -y --no-install-recommends virt-manager libvirt-daemon-system qemu-utils qemu-system-modules-spice gir1.2-spiceclientgtk-3.0
+
+# Install screen recording tool OBS Studio
 sudo apt-get install -y --no-install-recommends obs-studio obs-plugins qtwayland5 libva-wayland2
 
 # Install fonts for emoji and symbol support
@@ -84,9 +102,11 @@ sudo chsh -s $(which zsh) $USER
 
 # Sets VS Code as the default application for all system text file types
 sudo update-alternatives --set editor /usr/bin/code
-xdg-mime default code.desktop text/plain
+gio mime text/plain com.microsoft.VSCode.desktop
 for file in "$HOME/.bashrc" "$HOME/.zshrc"; do
-  [ -f "$file" ] && grep -qF 'EDITOR="code --wait"' "$file" || echo 'export EDITOR="code --wait" VISUAL="code --wait"' >> "$file"
+  if [ -f "$file" ] && ! grep -qF 'EDITOR="code --wait"' "$file"; then
+    echo 'export EDITOR="code --wait" VISUAL="code --wait"' >> "$file"
+  fi
 done
 
 # Install a predefined list of VS Code extensions

@@ -123,7 +123,10 @@ rm -rf /tmp/mytheme
 fd="KFileDialog Settings"
 
 QT_QPA_PLATFORM=offscreen plasma-apply-colorscheme Carl
-kwriteconfig6 --file plasmarc --group Theme --key name breeze-dark
+kwriteconfig6 --file kdeglobals --group Colors:Window --key ForegroundNegative "218,68,83"
+kwriteconfig6 --file kdeglobals --group Colors:Window --key ForegroundNeutral "246,116,0"
+kwriteconfig6 --file kdeglobals --group Colors:Window --key ForegroundPositive "39,174,96"
+kwriteconfig6 --file plasmarc --group Theme --key name default
 kwriteconfig6 --file kdeglobals --group Icons --key Theme Papirus
 kwriteconfig6 --file kcminputrc --group Mouse --key cursorTheme Bibata-Modern-Classic
 kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key library org.kde.kwin.aurorae
@@ -173,19 +176,20 @@ if [ -f "$wallpaper" ]; then
         sudo tee /usr/share/sddm/themes/breeze/theme.conf.user >/dev/null
 fi
 
-# Makes the Breeze Dark panels transparent, black only when a window is maximized
-system_themes=/usr/share/plasma/desktoptheme
-user_theme=~/.local/share/plasma/desktoptheme/breeze-dark
-variants="widgets solid/widgets translucent/widgets"
+# Makes the panels of the default Plasma style (Breeze) transparent, black only when a window is maximized
+system_theme=/usr/share/plasma/desktoptheme/default
+user_theme=~/.local/share/plasma/desktoptheme/default
 rm -rf "$user_theme"
 mkdir -p "$user_theme"
-cp -r "$system_themes/breeze-dark/." "$user_theme"
-for variant in $variants; do
-    mkdir -p "$user_theme/$variant"
-    zcat -f "$system_themes/default/$variant/panel-background.svg"* |
-        sed 's/currentColor/#000000/g' > "$user_theme/$variant/panel-background.svg"
+cp -r "$system_theme/." "$user_theme"
+for variant in widgets translucent/widgets solid/widgets; do
+    color=transparent
+    [ "$variant" = solid/widgets ] && color="#000000"
+    zcat -f "$system_theme/$variant/panel-background.svg"* |
+        sed "s/currentColor/$color/g; s/#000000/$color/g" |
+        { [ "$color" = transparent ] && sed 's/stop-opacity:[.0-9]*/stop-opacity:0/g' || cat; } |
+        gzip -9 > "$user_theme/$variant/panel-background.svgz"
 done
-sed -i 's/#000000/transparent/g; s/stop-opacity:[.0-9]*/stop-opacity:0/g' "$user_theme"/{,translucent/}widgets/panel-background.svg
 kwriteconfig6 --file "$user_theme/plasmarc" --group ContrastEffect --key enabled false
 kwriteconfig6 --file "$user_theme/plasmarc" --group BlurBehindEffect --key enabled false
 
@@ -211,7 +215,7 @@ if [ -f ~/.local/share/wallpapers/wallpaper.png ]; then
 fi
 
 # Bottom dock and top bar
-dbus-send --session --type=method_call --print-reply=literal --dest=org.kde.plasmashell \
+dock_id=$(dbus-send --session --type=method_call --print-reply=literal --dest=org.kde.plasmashell \
     /PlasmaShell org.kde.PlasmaShell.evaluateScript string:'
 panels().forEach(function (panel) { panel.remove(); });
 
@@ -244,7 +248,13 @@ kicker.writeConfig("alignResultsToBottom", "false");
 kicker.writeConfig("showRecentApps", "false");
 kicker.writeConfig("showRecentDocs", "false");
 kicker.writeConfig("useExtraRunners", "false");
-'
+print(dock.id);
+')
+
+# Dock: always transparent. Top bar: adaptive (transparent, black when a window is maximized)
+dock_id=$(echo "$dock_id" | tr -dc '0-9')
+kwriteconfig6 --file plasmashellrc --group PlasmaViews --group "Panel $dock_id" --key panelOpacity 2
+systemctl --user restart plasma-plasmashell
 
 # Launcher favorites: only System Settings
 favorites() {
