@@ -4,6 +4,9 @@ set -e
 # Minimal GNOME: desktop, login manager, settings, file manager and terminal
 sudo apt-get install -y --no-install-recommends gnome-shell gnome-session gdm3 gnome-control-center nautilus gnome-terminal
 
+# Install system font, Inter
+sudo apt-get install -y --no-install-recommends fonts-inter
+
 # Install GNOME Keyring PAM module for automatic keyring unlock at login
 sudo apt-get install -y --no-install-recommends gnome-keyring libpam-gnome-keyring
 
@@ -54,6 +57,12 @@ gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'no
 # Setup desktop preferences
 gsettings set org.gnome.desktop.wm.keybindings show-desktop "['<Super>d']"
 gsettings set org.gnome.desktop.wm.preferences button-layout "appmenu:minimize,maximize,close"
+
+# Set system font: interface, documents and window titles
+gsettings set org.gnome.desktop.interface font-name 'Inter 11'
+gsettings set org.gnome.desktop.interface document-font-name 'Inter 11'
+gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Inter Bold 11'
+gsettings set org.gnome.desktop.wm.preferences titlebar-uses-system-font false
 
 # Set desktop wallpaper, if one was chosen
 WALLPAPER="$HOME/.local/share/wallpapers/wallpaper.png"

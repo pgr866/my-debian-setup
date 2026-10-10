@@ -7,13 +7,15 @@ sudo apt-get install -y --no-install-recommends plasma-desktop sddm systemsettin
 # Install KDE Wallet PAM module and plugins for automatic keyring unlock at login
 sudo apt-get install -y --no-install-recommends libpam-kwallet5 libqca-qt6-plugins
 
-# Use KWallet instead of GNOME Keyring for app passwords
-systemctl --user mask gnome-keyring-daemon.socket gnome-keyring-daemon.service
+# Use KWallet for app passwords
+mkdir -p ~/.config/systemd/user
+ln -sf /dev/null ~/.config/systemd/user/gnome-keyring-daemon.socket
+ln -sf /dev/null ~/.config/systemd/user/gnome-keyring-daemon.service
 printf '[D-BUS Service]\nName=org.freedesktop.secrets\nExec=/usr/bin/kwalletd6\n' |
     install -Dm644 /dev/stdin ~/.local/share/dbus-1/services/org.freedesktop.secrets.service
 
-# Install KDE default monospace font, Hack
-sudo apt-get install -y --no-install-recommends fonts-hack
+# Install system font Inter
+sudo apt-get install -y --no-install-recommends fonts-inter
 
 # Install image format support (WebP, TIFF)
 sudo apt-get install -y --no-install-recommends qt6-image-formats-plugins
@@ -102,13 +104,18 @@ rm -rf /tmp/mytheme
 # Settings: look and feel, window behavior, Dolphin and file dialogs
 fd="KFileDialog Settings"
 
-QT_QPA_PLATFORM=offscreen plasma-apply-colorscheme Carl
+QT_QPA_PLATFORM=offscreen plasma-apply-colorscheme Carl || true
 kwriteconfig6 --file kdeglobals --group Colors:Window --key ForegroundNegative "218,68,83"
 kwriteconfig6 --file kdeglobals --group Colors:Window --key ForegroundNeutral "246,116,0"
 kwriteconfig6 --file kdeglobals --group Colors:Window --key ForegroundPositive "39,174,96"
 dbus-send --session --type=signal /KGlobalSettings org.kde.KGlobalSettings.notifyChange int32:0 int32:0 || true
 kwriteconfig6 --file plasmarc --group Theme --key name default
 kwriteconfig6 --file kdeglobals --group Icons --key Theme Papirus
+for key in font menuFont toolBarFont smallestReadableFont; do
+    kwriteconfig6 --file kdeglobals --group General --key $key "Inter,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1"
+done
+kwriteconfig6 --file kdeglobals --group WM --key activeFont "Inter,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1"
+dbus-send --session --type=signal /KGlobalSettings org.kde.KGlobalSettings.notifyChange int32:1 int32:0 || true
 kwriteconfig6 --file kcminputrc --group Mouse --key cursorTheme Bibata-Modern-Classic
 kwriteconfig6 --file kcminputrc --group Mouse --key cursorSize 20
 kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key library org.kde.kwin.aurorae
@@ -137,7 +144,7 @@ kwriteconfig6 --file kglobalshortcutsrc --group plasmashell --key "next activity
 kwriteconfig6 --file kglobalshortcutsrc --group kwin --key Overview "Meta,Meta+W,Toggle Overview"
 
 # GTK apps: global menu
-sudo apt-get install -y --no-install-recommends appmenu-gtk3-module
+sudo apt-get install -y --no-install-recommends appmenu-gtk3-module gsettings-desktop-schemas
 kwriteconfig6 --file ~/.config/gtk-3.0/settings.ini --group Settings --key gtk-modules appmenu-gtk-module
 kwriteconfig6 --file ~/.config/gtk-3.0/settings.ini --group Settings --key gtk-shell-shows-menubar 1
 
@@ -186,7 +193,10 @@ set -e
 rm -rf ~/.config/autostart/mytheme-setup.desktop ~/.local/share/mytheme
 
 # Apply window button layout for GTK apps
-python3 -c "from gi.repository import Gio;Gio.Settings.new('org.gnome.desktop.wm.preferences').set_string('button-layout','menu:minimize,maximize,close');Gio.Settings.sync()"
+gsettings set org.gnome.desktop.wm.preferences button-layout 'menu:minimize,maximize,close'
+
+# Apply system font for GTK apps
+gsettings set org.gnome.desktop.interface font-name 'Inter 10'
 
 dbus-send --session --type=method_call --dest=org.kde.KWin /KWin org.kde.KWin.reconfigure
 
