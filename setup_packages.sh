@@ -21,8 +21,8 @@ sudo apt-get install -y --no-install-recommends gimp
 # Install audio editor Audacity
 sudo apt-get install -y --no-install-recommends audacity
 
-# Install video editor OpenShot
-sudo apt-get install -y --no-install-recommends openshot-qt
+# Install video editor Shotcut
+sudo apt-get install -y --no-install-recommends shotcut
 
 # Install virtual machine manager
 sudo apt-get install -y --no-install-recommends virt-manager libvirt-daemon-system qemu-utils qemu-system-modules-spice gir1.2-spiceclientgtk-3.0

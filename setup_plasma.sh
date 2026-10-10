@@ -129,13 +129,13 @@ kwriteconfig6 --file kdeglobals --group Colors:Window --key ForegroundPositive "
 kwriteconfig6 --file plasmarc --group Theme --key name default
 kwriteconfig6 --file kdeglobals --group Icons --key Theme Papirus
 kwriteconfig6 --file kcminputrc --group Mouse --key cursorTheme Bibata-Modern-Classic
+kwriteconfig6 --file kcminputrc --group Mouse --key cursorSize 20
 kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key library org.kde.kwin.aurorae
 kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key theme __aurorae__svg__Utterly-Round-Dark
 kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnLeft "N"
 kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnRight "IAX"
 kwriteconfig6 --file auroraerc --group Utterly-Round-Dark --key ButtonSize 0
 kwriteconfig6 --file ksplashrc --group KSplash --key Engine none
-kwriteconfig6 --file kcminputrc --group Mouse --key cursorSize 20
 
 kwriteconfig6 --file kwinrc --group Effect-overview --key BorderActivate 9
 
@@ -176,22 +176,25 @@ if [ -f "$wallpaper" ]; then
         sudo tee /usr/share/sddm/themes/breeze/theme.conf.user >/dev/null
 fi
 
-# Makes the panels of the default Plasma style (Breeze) transparent, black only when a window is maximized
+# Makes the panels of the default Plasma style (Breeze) transparent, black only when a window is maximized.
 system_theme=/usr/share/plasma/desktoptheme/default
 user_theme=~/.local/share/plasma/desktoptheme/default
 rm -rf "$user_theme"
 mkdir -p "$user_theme"
-cp -r "$system_theme/." "$user_theme"
+cp "$system_theme/metadata.json" "$system_theme/plasmarc" "$user_theme"
+kwriteconfig6 --file "$user_theme/plasmarc" --group ContrastEffect --key enabled false
+kwriteconfig6 --file "$user_theme/plasmarc" --group BlurBehindEffect --key enabled false
 for variant in widgets translucent/widgets solid/widgets; do
     color=transparent
     [ "$variant" = solid/widgets ] && color="#000000"
-    zcat -f "$system_theme/$variant/panel-background.svg"* |
+    system_file=$(ls "$system_theme/$variant"/panel-background.svg*)
+    user_file=$user_theme/$variant/$(basename "$system_file")
+    mkdir -p "$user_theme/$variant"
+    zcat -f "$system_file" |
         sed "s/currentColor/$color/g; s/#000000/$color/g" |
         { [ "$color" = transparent ] && sed 's/stop-opacity:[.0-9]*/stop-opacity:0/g' || cat; } |
-        gzip -9 > "$user_theme/$variant/panel-background.svgz"
+        { [ "${user_file##*.}" = svgz ] && gzip -9 || cat; } > "$user_file"
 done
-kwriteconfig6 --file "$user_theme/plasmarc" --group ContrastEffect --key enabled false
-kwriteconfig6 --file "$user_theme/plasmarc" --group BlurBehindEffect --key enabled false
 
 # Panels and wallpaper: applied now if Plasma is running, otherwise at the first login
 session_setup=$DATA/mytheme/session-setup.sh
@@ -204,9 +207,6 @@ rm -rf ~/.config/autostart/mytheme-setup.desktop ~/.local/share/mytheme
 # Apply window button layout for GTK apps
 python3 -c "from gi.repository import Gio;Gio.Settings.new('org.gnome.desktop.wm.preferences').set_string('button-layout','menu:minimize,maximize,close');Gio.Settings.sync()"
 
-# Restart plasmashell so it reloads the Plasma style, icons and panels
-rm -rf ~/.cache/ksvg-elements* ~/.cache/plasma_theme_*
-systemctl --user restart plasma-plasmashell
 dbus-send --session --type=method_call --dest=org.kde.KWin /KWin org.kde.KWin.reconfigure
 
 # Desktop wallpaper, if one was chosen
@@ -254,7 +254,6 @@ print(dock.id);
 # Dock: always transparent. Top bar: adaptive (transparent, black when a window is maximized)
 dock_id=$(echo "$dock_id" | tr -dc '0-9')
 kwriteconfig6 --file plasmashellrc --group PlasmaViews --group "Panel $dock_id" --key panelOpacity 2
-systemctl --user restart plasma-plasmashell
 
 # Launcher favorites: only System Settings
 favorites() {
@@ -265,6 +264,10 @@ favorites LinkResourceToActivity applications:systemsettings.desktop
 for resource in $(python3 -c "import os, sqlite3; [print(r) for r, in sqlite3.connect('file:' + os.path.expanduser('~/.local/share/kactivitymanagerd/resources/database') + '?mode=ro', uri=True).execute(\"SELECT targettedResource FROM ResourceLink WHERE initiatingAgent = 'org.kde.plasma.favorites.applications' AND usedActivity = ':global' AND targettedResource != 'applications:systemsettings.desktop'\")]"); do
     favorites UnlinkResourceFromActivity "$resource"
 done
+
+# Restart plasmashell once, so it reloads the Plasma style, icons, panels and their opacity
+rm -rf ~/.cache/ksvg-elements* ~/.cache/plasma_theme_*
+systemctl --user restart plasma-plasmashell
 EOF
 
 if pgrep -u "$USER" -x plasmashell >/dev/null; then
