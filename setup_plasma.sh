@@ -51,7 +51,7 @@ sudo apt-get install -y --no-install-recommends kde-spectacle
 sudo apt-get install -y --no-install-recommends plasma-systemmonitor
 
 # Setup Wi-Fi
-sudo apt-get install -y --install-recommends plasma-nm
+sudo apt-get install -y --no-install-recommends plasma-nm
 printf 'auto lo\niface lo inet loopback\n' | sudo install -m644 /dev/stdin /etc/network/interfaces
 
 # Setup Bluetooth
