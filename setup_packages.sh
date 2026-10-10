@@ -43,7 +43,7 @@ wget -O discord.deb "https://discord.com/api/download?platform=linux&format=deb"
 wget -O vscode.deb "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
 wget -O protonvpn.deb "https://repo.protonvpn.com/debian/dists/stable/main/binary-all/$(wget -qO- https://repo.protonvpn.com/debian/dists/stable/main/binary-all/ | grep -oP 'protonvpn-stable-release_.*?_all.deb' | tail -1)"
 echo "code code/add-microsoft-repo boolean true" | sudo debconf-set-selections # Auto-accept VS Code repository prompt
-sudo apt-get install -y ./*.deb
+sudo apt-get install -y --no-install-recommends ./*.deb
 rm -f ./*.deb
 
 # Install Proton VPN desktop app (requires the Proton VPN .deb installed)
@@ -58,14 +58,14 @@ cp /usr/share/applications/discord.desktop $HOME/.config/autostart/
 sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
 sudo curl -fsSLo /etc/apt/sources.list.d/brave-browser-release.sources https://brave-browser-apt-release.s3.brave.com/brave-browser.sources
 sudo apt-get update
-sudo apt-get install -y brave-browser
+sudo apt-get install -y --no-install-recommends brave-browser
 
 # Install Spotify
 curl -sS https://download.spotify.com/debian/pubkey_5384CE82BA52C83A.asc | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
 echo "deb https://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
 sudo apt-get update
 sudo mkdir -p /usr/share/desktop-directories # its installer needs this folder to add the menu entry
-sudo apt-get install -y spotify-client
+sudo apt-get install -y --no-install-recommends spotify-client
 # Add Spotify Desktop Shortcut, the desktop does not show it automatically
 mkdir -p ~/.local/share/applications
 cat << 'EOF' > ~/.local/share/applications/spotify.desktop
@@ -80,7 +80,7 @@ MimeType=x-scheme-handler/spotify;
 EOF
 
 # Install Zsh and Oh My Zsh
-sudo apt-get install -y zsh
+sudo apt-get install -y --no-install-recommends zsh
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
   bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 else
