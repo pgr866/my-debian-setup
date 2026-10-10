@@ -100,9 +100,15 @@ fi
 sed -i 's/^plugins=(.*/plugins=(git zsh-autosuggestions zsh-syntax-highlighting)/' "$HOME/.zshrc"
 sudo chsh -s $(which zsh) $USER
 
-# Sets VS Code as the default application for all system text file types
+# Sets VS Code as the default application for common text file types
 sudo update-alternatives --set editor /usr/bin/code
-gio mime text/plain com.microsoft.VSCode.desktop
+mapfile -t text_mimes < <(grep '^text/' /usr/share/mime/types | grep -vx 'text/html')
+text_mimes+=(
+  application/json application/xml application/x-yaml application/toml
+  application/javascript application/x-shellscript application/x-sh application/sql
+  application/x-php application/x-perl application/x-ruby application/x-desktop
+)
+xdg-mime default com.microsoft.VSCode.desktop "${text_mimes[@]}" 2>/dev/null
 for file in "$HOME/.bashrc" "$HOME/.zshrc"; do
   if [ -f "$file" ] && ! grep -qF 'EDITOR="code --wait"' "$file"; then
     echo 'export EDITOR="code --wait" VISUAL="code --wait"' >> "$file"

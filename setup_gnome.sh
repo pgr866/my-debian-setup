@@ -44,9 +44,6 @@ echo "options rtw88_core disable_lps_deep=y" | sudo tee /etc/modprobe.d/rtw88.co
 sudo mkdir -p /etc/NetworkManager/conf.d
 echo -e "[connection]\nwifi.powersave = 2" | sudo tee /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
 
-# Turn off Bluetooth
-bluetoothctl power off
-
 # Disable Automatic Screen Blank
 gsettings set org.gnome.desktop.session idle-delay 0
 

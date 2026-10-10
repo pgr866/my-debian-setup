@@ -49,33 +49,13 @@ sudo apt-get install -y --no-install-recommends kde-spectacle
 sudo apt-get install -y --no-install-recommends plasma-systemmonitor
 
 # Setup Wi-Fi
-# sudo apt-get install -y --install-recommends plasma-nm
-
-# sudo systemctl disable --now wpa_supplicant
-# sudo nmcli radio wifi on
-# sudo systemctl restart NetworkManager
-
-# sudo systemctl stop wpa_supplicant NetworkManager
-# sudo killall wpa_supplicant
-# sudo systemctl start wpa_supplicant NetworkManager
-
-# sudo systemctl stop wpa_supplicant NetworkManager
-# sudo ip link set wlp4s0 up
-# sudo systemctl start wpa_supplicant NetworkManager
-
-# sudo sed -i '/wlp4s0/s/^/#/' /etc/network/interfaces
-# sudo systemctl enable --now wpa_supplicant
-# sudo nmcli radio wifi on
-# sudo systemctl restart NetworkManager
-
-# sudo apt-get install -y --no-install-recommends plasma-nm wpasupplicant
-# printf 'auto lo\niface lo inet loopback\n' | sudo install -m644 /dev/stdin /etc/network/interfaces
+sudo apt-get install -y --install-recommends plasma-nm
+printf 'auto lo\niface lo inet loopback\n' | sudo install -m644 /dev/stdin /etc/network/interfaces
 
 # Setup Bluetooth
 sudo apt-get install -y --no-install-recommends bluedevil libspa-0.2-bluetooth
 printf '[Service]\nExecStart=\nExecStart=/usr/libexec/bluetooth/obexd -P irmc,pbap\n' |
     sudo install -Dm644 /dev/stdin /etc/systemd/user/obex.service.d/no-phonebook.conf
-bluetoothctl power off
 
 # Setup screen sharing on Wayland
 sudo apt-get install -y --no-install-recommends xdg-desktop-portal-kde
@@ -126,6 +106,7 @@ QT_QPA_PLATFORM=offscreen plasma-apply-colorscheme Carl
 kwriteconfig6 --file kdeglobals --group Colors:Window --key ForegroundNegative "218,68,83"
 kwriteconfig6 --file kdeglobals --group Colors:Window --key ForegroundNeutral "246,116,0"
 kwriteconfig6 --file kdeglobals --group Colors:Window --key ForegroundPositive "39,174,96"
+dbus-send --session --type=signal /KGlobalSettings org.kde.KGlobalSettings.notifyChange int32:0 int32:0 || true
 kwriteconfig6 --file plasmarc --group Theme --key name default
 kwriteconfig6 --file kdeglobals --group Icons --key Theme Papirus
 kwriteconfig6 --file kcminputrc --group Mouse --key cursorTheme Bibata-Modern-Classic
@@ -242,6 +223,7 @@ var systray = bar.addWidget("org.kde.plasma.systemtray");
 var tray = desktopById(systray.readConfig("SystrayContainmentId"));
 tray.currentConfigGroup = ["General"];
 tray.writeConfig("knownItems", "org.kde.plasma.notifications");
+tray.writeConfig("extraItems", "org.kde.plasma.manage-inputmethod,org.kde.plasma.bluetooth,org.kde.plasma.battery,org.kde.plasma.devicenotifier,org.kde.plasma.clipboard,org.kde.plasma.volume,org.kde.plasma.cameraindicator,org.kde.plasma.brightness,org.kde.plasma.mediacontroller,org.kde.plasma.keyboardlayout,org.kde.plasma.networkmanagement");
 var kicker = bar.addWidget("org.kde.plasma.kicker");
 kicker.currentConfigGroup = ["General"];
 kicker.writeConfig("alignResultsToBottom", "false");
