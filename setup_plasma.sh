@@ -105,9 +105,6 @@ rm -rf /tmp/mytheme
 fd="KFileDialog Settings"
 
 QT_QPA_PLATFORM=offscreen plasma-apply-colorscheme Carl || true
-kwriteconfig6 --file kdeglobals --group Colors:Window --key ForegroundNegative "218,68,83"
-kwriteconfig6 --file kdeglobals --group Colors:Window --key ForegroundNeutral "246,116,0"
-kwriteconfig6 --file kdeglobals --group Colors:Window --key ForegroundPositive "39,174,96"
 dbus-send --session --type=signal /KGlobalSettings org.kde.KGlobalSettings.notifyChange int32:0 int32:0 || true
 kwriteconfig6 --file plasmarc --group Theme --key name default
 kwriteconfig6 --file kdeglobals --group Icons --key Theme Papirus
@@ -197,6 +194,11 @@ gsettings set org.gnome.desktop.wm.preferences button-layout 'menu:minimize,maxi
 
 # Apply system font for GTK apps
 gsettings set org.gnome.desktop.interface font-name 'Inter 10'
+
+# Red, yellow and green window buttons
+kwriteconfig6 --file kdeglobals --group Colors:Window --key ForegroundNegative "218,68,83"
+kwriteconfig6 --file kdeglobals --group Colors:Window --key ForegroundNeutral "246,116,0"
+kwriteconfig6 --file kdeglobals --group Colors:Window --key ForegroundPositive "39,174,96"
 
 dbus-send --session --type=method_call --dest=org.kde.KWin /KWin org.kde.KWin.reconfigure
 
