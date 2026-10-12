@@ -65,11 +65,11 @@ sudo apt-get install -y --no-install-recommends xdg-desktop-portal-kde
 # Setup sound
 sudo apt-get install -y --no-install-recommends plasma-pa wireplumber
 
-# Setup screen brightness control and energy profiles
-sudo apt-get install -y --no-install-recommends powerdevil
-
 # Setup battery status
 sudo apt-get install -y --no-install-recommends upower
+
+# Setup screen brightness control and energy profiles
+sudo apt-get install -y --no-install-recommends powerdevil
 
 # Disable automatic suspend and screen off on inactivity
 for profile in AC Battery LowBattery; do
@@ -124,8 +124,8 @@ kwriteconfig6 --file ksplashrc --group KSplash --key Engine none
 
 kwriteconfig6 --file kwinrc --group Effect-overview --key BorderActivate 9
 
-kwriteconfig6 --file kdeglobals --group "$fd" --key "Speedbar Width" 106
-
+kwriteconfig6 --file dolphinrc --group General --key ShowHiddenFiles true
+kwriteconfig6 --file kdeglobals --group "$fd" --key "Show hidden files" true
 kwriteconfig6 --file dolphinrc --group IconsMode --key PreviewSize 48
 kwriteconfig6 --file dolphinrc --group "$fd" --key "Places Icons Auto-resize" false
 kwriteconfig6 --file dolphinrc --group "$fd" --key "Places Icons Static Size" 22
