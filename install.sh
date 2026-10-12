@@ -1,15 +1,9 @@
 #!/bin/bash
 set -e
 
-# Desktop environment to set up: plasma (default) or gnome
 # Optional wallpaper from the wallpapers folder, e.g. wallpaper3 (none by default)
-# Usage: wget -qO- https://raw.githubusercontent.com/pgr866/my-debian-setup/main/install.sh | bash -s gnome wallpaper3
-DESKTOP="${1:-plasma}"
-WALLPAPER="$2"
-case "$DESKTOP" in
-    plasma|gnome) ;;
-    *) echo "Unknown desktop '$DESKTOP'. Use: plasma or gnome" >&2; exit 1 ;;
-esac
+# Usage: wget -qO- https://raw.githubusercontent.com/pgr866/my-debian-setup/main/install.sh | bash -s wallpaper3
+WALLPAPER="$1"
 
 REPO="https://raw.githubusercontent.com/pgr866/my-debian-setup/main"
 
@@ -20,7 +14,7 @@ cd "$DIR"
 
 # Download utility and setup scripts, replacing old copies
 for script in clear_docker.sh sync_hard_drive.sh update.sh \
-    setup_packages.sh "setup_$DESKTOP.sh" setup_nvidia_driver.sh; do
+    setup_packages.sh setup_plasma.sh setup_nvidia_driver.sh; do
     rm -f "$script"
     wget -O "$script" "$REPO/$script"
 done
@@ -37,7 +31,7 @@ chmod +x ./*.sh
 
 # Run the primary configuration and setup scripts
 bash setup_packages.sh
-bash "setup_$DESKTOP.sh"
+bash setup_plasma.sh
 bash setup_nvidia_driver.sh
 
 # Append PATH to .bashrc and .zshrc if not already present
