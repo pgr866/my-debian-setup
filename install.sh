@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+sudo -v
+
 # Optional wallpaper from the wallpapers folder, e.g. wallpaper3 (none by default)
 # Usage: wget -qO- https://raw.githubusercontent.com/pgr866/my-debian-setup/main/install.sh | bash -s wallpaper3
 WALLPAPER="$1"
