@@ -124,8 +124,6 @@ kwriteconfig6 --file ksplashrc --group KSplash --key Engine none
 
 kwriteconfig6 --file kwinrc --group Effect-overview --key BorderActivate 9
 
-kwriteconfig6 --file dolphinrc --group General --key ShowHiddenFiles true
-kwriteconfig6 --file kdeglobals --group "$fd" --key "Show hidden files" true
 kwriteconfig6 --file dolphinrc --group IconsMode --key PreviewSize 48
 kwriteconfig6 --file dolphinrc --group "$fd" --key "Places Icons Auto-resize" false
 kwriteconfig6 --file dolphinrc --group "$fd" --key "Places Icons Static Size" 22
