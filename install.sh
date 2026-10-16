@@ -3,8 +3,8 @@ set -e
 
 sudo -v
 
-# Optional wallpaper from the wallpapers folder, e.g. wallpaper3 (none by default)
-# Usage: wget -qO- https://raw.githubusercontent.com/pgr866/my-debian-setup/main/install.sh | bash -s wallpaper3
+# Optional wallpaper: a file in the repository root or a URL (none by default)
+# Usage: wget -qO- https://raw.githubusercontent.com/pgr866/my-debian-setup/main/install.sh | bash -s wallpaper.png
 WALLPAPER="$1"
 
 REPO="https://raw.githubusercontent.com/pgr866/my-debian-setup/main"
@@ -23,8 +23,9 @@ done
 
 # Download the chosen wallpaper, if any
 if [ -n "$WALLPAPER" ]; then
+    case "$WALLPAPER" in http://*|https://*) url="$WALLPAPER" ;; *) url="$REPO/$WALLPAPER" ;; esac
     mkdir -p "$HOME/.local/share/wallpapers"
-    wget -O "$HOME/.local/share/wallpapers/wallpaper.png" "$REPO/wallpapers/$WALLPAPER.png" ||
+    wget -O "$HOME/.local/share/wallpapers/wallpaper.png" "$url" ||
         { rm -f "$HOME/.local/share/wallpapers/wallpaper.png"; exit 1; }
 fi
 

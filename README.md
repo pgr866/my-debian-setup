@@ -6,7 +6,7 @@ This repository includes the following utilities:
 
 - `debian_usb_maker.sh`: Creates a bootable Debian USB installer from an ISO, supporting automated installations via optional preseed configuration.
 - `preseed.cfg`: My personal Debian 13 (Trixie) installer configuration. It provides a minimal installation with automated full-disk partitioning (atomic layout) on `/dev/nvme0n1`, creating the user `user` with password `1234` (no root login), keeping most installer settings at their default values while customizing the system for an English environment with Spanish keyboard, time, and regional settings. For further customization and advanced configuration options, please refer to the official [Debian Installer Preseed documentation](https://www.debian.org/releases/stable/amd64/apb.en.html).
-- `wallpapers/`: Desktop backgrounds. Pass the name of one (e.g. `wallpaper5`) to `install.sh` to apply it during installation; if none is given, the desktop keeps its default background.
+- `wallpaper.png`: Desktop background. Pass it (or the URL of any other image) to `install.sh` to apply it during installation; if none is given, the desktop keeps its default background.
 - `setup_plasma.sh`: Installs a minimal KDE Plasma desktop environment with essential KDE applications, and applies a custom theme, panel layout, and UI preferences.
 - `setup_nvidia_driver.sh`: Installs NVIDIA proprietary drivers, configures GRUB and kernel modesetting, and optimizes the system for graphics hardware compatibility.
 - `setup_packages.sh`: Performs a full system upgrade, installs essential software, configures development environments (Git, VS Code, Docker, Terraform), and sets up user-specific desktop tools and media utilities.
@@ -31,9 +31,9 @@ Follow these steps to deploy your Debian 13 (Trixie) environment using this repo
 5.  **Automated Provisioning**: If you included a `preseed.cfg` file, the installation will run automatically. Note that you will still need to select your network interface (Ethernet or Wi-Fi) and provide credentials if connecting via Wi-Fi.
 6.  **Run the Installer**: Once Debian is installed, log in to your terminal and execute the following command to download and run the main orchestration script:
     ```bash
-    wget -qO- https://raw.githubusercontent.com/pgr866/my-debian-setup/main/install.sh | bash -s wallpaper5
+    wget -qO- https://raw.githubusercontent.com/pgr866/my-debian-setup/main/install.sh | bash -s wallpaper.png
     ```
-    The only argument is optional: the name of an image in the `wallpapers` folder, without the extension (e.g. `wallpaper5`). If omitted, the desktop keeps its default background.
+    The only argument is optional: an image file in the repository root (e.g. `wallpaper.png`) or the URL of an image. If omitted, the desktop keeps its default background.
 7.  **Complete**: The system will automatically reboot once the process is complete. Your Debian environment will be fully configured and ready for use!
 
 ## Customization & Safety
