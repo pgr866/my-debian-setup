@@ -6,6 +6,8 @@ cd /tmp
 sudo apt-get update
 sudo apt-get dist-upgrade -y
 
+# sudo apt-get install -y --no-install-recommends ca-certificates wget xz-utils
+
 # Install basic command-line tools
 sudo apt-get install -y --no-install-recommends fastfetch git curl unzip
 
@@ -49,6 +51,11 @@ rm -f ./*.deb
 # Install Proton VPN desktop app (requires the Proton VPN .deb installed)
 sudo apt-get update
 sudo apt-get install -y --no-install-recommends proton-vpn-gnome-desktop
+
+# Start the Proton VPN daemon on demand instead of at every boot
+sudo systemctl disable --now me.proton.vpn.split_tunneling.service
+sudo ln -sf /usr/lib/systemd/system/me.proton.vpn.split_tunneling.service /etc/systemd/system/proton.VPN.service
+sudo systemctl daemon-reload
 
 # Add Discord to run at startup
 mkdir -p $HOME/.config/autostart
@@ -136,6 +143,10 @@ command -v rclone >/dev/null && sudo rclone selfupdate || curl https://rclone.or
 # Install Docker Engine
 command -v docker >/dev/null || curl -fsSL https://get.docker.com | sh
 sudo usermod -aG docker "$USER"
+
+# Start Docker on demand instead of at every boot
+sudo systemctl enable docker.socket
+sudo systemctl disable --now docker.service containerd.service
 
 # Install Terraform
 TF_V=$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | grep -oP '(?<="current_version":")[^"]+')

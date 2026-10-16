@@ -32,8 +32,8 @@ fi
 chmod +x ./*.sh
 
 # Run the primary configuration and setup scripts
-bash setup_packages.sh
 bash setup_plasma.sh
+bash setup_packages.sh
 bash setup_nvidia_driver.sh
 
 # Append PATH to .bashrc and .zshrc if not already present

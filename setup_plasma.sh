@@ -14,6 +14,9 @@ ln -sf /dev/null ~/.config/systemd/user/gnome-keyring-daemon.service
 printf '[D-BUS Service]\nName=org.freedesktop.secrets\nExec=/usr/bin/kwalletd6\n' |
     install -Dm644 /dev/stdin ~/.local/share/dbus-1/services/org.freedesktop.secrets.service
 
+# Never start KAccess (keyboard accessibility daemon: sticky keys, slow keys, visual bell)
+ln -sf /dev/null ~/.config/systemd/user/plasma-kaccess.service
+
 # Install system font Inter
 sudo apt-get install -y --no-install-recommends fonts-inter
 
@@ -148,6 +151,10 @@ kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock false
 
 # Login screen (SDDM): Breeze theme, same look as the lock screen
 sudo apt-get install -y --no-install-recommends sddm-theme-breeze
+
+# Login screen (SDDM): Wayland greeter, so no Xorg stays running just for the login screen
+printf '[General]\nDisplayServer=wayland\n\n[Wayland]\nCompositorCommand=kwin_wayland --drm --no-lockscreen --no-global-shortcuts --locale1\n' |
+    sudo install -Dm644 /dev/stdin /etc/sddm.conf.d/10-wayland-greeter.conf
 
 # Lock and login screens: the desktop wallpaper, if one was chosen
 wallpaper=$DATA/wallpapers/wallpaper.png

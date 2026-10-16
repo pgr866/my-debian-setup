@@ -5,7 +5,7 @@ A personal collection of shell scripts designed to automate the installation and
 This repository includes the following utilities:
 
 - `debian_usb_maker.sh`: Creates a bootable Debian USB installer from an ISO, supporting automated installations via optional preseed configuration.
-- `preseed.cfg`: My personal Debian 13 (Trixie) installer configuration. It provides a minimal installation with automated full-disk partitioning (atomic layout), keeping most installer settings at their default values while customizing the system for an English environment with Spanish keyboard, time, and regional settings. For further customization and advanced configuration options, please refer to the official [Debian Installer Preseed documentation](https://www.debian.org/releases/stable/amd64/apb.en.html).
+- `preseed.cfg`: My personal Debian 13 (Trixie) installer configuration. It provides a minimal installation with automated full-disk partitioning (atomic layout) on `/dev/nvme0n1`, creating the user `user` with password `1234` (no root login), keeping most installer settings at their default values while customizing the system for an English environment with Spanish keyboard, time, and regional settings. For further customization and advanced configuration options, please refer to the official [Debian Installer Preseed documentation](https://www.debian.org/releases/stable/amd64/apb.en.html).
 - `wallpapers/`: Desktop backgrounds. Pass the name of one (e.g. `wallpaper5`) to `install.sh` to apply it during installation; if none is given, the desktop keeps its default background.
 - `setup_plasma.sh`: Installs a minimal KDE Plasma desktop environment with essential KDE applications, and applies a custom theme, panel layout, and UI preferences.
 - `setup_nvidia_driver.sh`: Installs NVIDIA proprietary drivers, configures GRUB and kernel modesetting, and optimizes the system for graphics hardware compatibility.
@@ -39,6 +39,7 @@ Follow these steps to deploy your Debian 13 (Trixie) environment using this repo
 ## Customization & Safety
 
 * **Review Before Running**: These scripts are tailored for my personal machine. Before running `install.sh`, I strongly recommend reviewing the contents of each script to ensure they align with your specific hardware and preferences (e.g., NVIDIA drivers, Docker settings, or package selections).
+* **Preseed**: `preseed.cfg` wipes the entire disk `/dev/nvme0n1`; change it to match your disk. Change the default password after installation.
 * **Safety**: Ensure you have a current backup of your data before running any installation or system configuration scripts.
 * **Environment**: The repository is designed for **Debian 13 (Trixie)**. Behavior on other Debian versions or derivatives may vary.
 * **License**: Feel free to fork this repository and adapt it to your workflow. If you find improvements or have suggestions, pull requests are always welcome.
