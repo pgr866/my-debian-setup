@@ -6,10 +6,8 @@ cd /tmp
 sudo apt-get update
 sudo apt-get dist-upgrade -y
 
-# sudo apt-get install -y --no-install-recommends ca-certificates wget xz-utils
-
 # Install basic command-line tools
-sudo apt-get install -y --no-install-recommends fastfetch git curl unzip
+sudo apt-get install -y --no-install-recommends fastfetch git curl unzip xz-utils
 
 # Install exFAT support
 sudo apt-get install -y --no-install-recommends exfatprogs

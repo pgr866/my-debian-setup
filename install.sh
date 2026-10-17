@@ -1,10 +1,14 @@
 #!/bin/bash
 set -e
 
+# Ask for sudo privileges
 sudo -v
 
-# Optional wallpaper: a file in the repository root or a URL (none by default)
+# Install wget
+sudo apt-get install -y --no-install-recommends wget
+
 # Usage: wget -qO- https://raw.githubusercontent.com/pgr866/my-debian-setup/main/install.sh | bash -s wallpaper.png
+# Optional wallpaper: a file in the repository root or a URL (none by default)
 WALLPAPER="$1"
 
 REPO="https://raw.githubusercontent.com/pgr866/my-debian-setup/main"
