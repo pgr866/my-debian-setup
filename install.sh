@@ -18,14 +18,14 @@ cd "$DIR"
 for script in clear_docker.sh sync_hard_drive.sh update.sh \
     setup_packages.sh setup_plasma.sh setup_nvidia_driver.sh; do
     rm -f "$script"
-    wget -O "$script" "$REPO/$script"
+    wget -nv --tries=3 -O "$script" "$REPO/$script"
 done
 
 # Download the chosen wallpaper, if any
 if [ -n "$WALLPAPER" ]; then
     case "$WALLPAPER" in http://*|https://*) url="$WALLPAPER" ;; *) url="$REPO/$WALLPAPER" ;; esac
     mkdir -p "$HOME/.local/share/wallpapers"
-    wget -O "$HOME/.local/share/wallpapers/wallpaper.png" "$url" ||
+    wget -nv --tries=3 -O "$HOME/.local/share/wallpapers/wallpaper.png" "$url" ||
         { rm -f "$HOME/.local/share/wallpapers/wallpaper.png"; exit 1; }
 fi
 
