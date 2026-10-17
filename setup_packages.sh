@@ -7,7 +7,7 @@ sudo apt-get update
 sudo apt-get dist-upgrade -y
 
 # Install basic command-line tools
-sudo apt-get install -y --no-install-recommends fastfetch git curl unzip xz-utils
+sudo apt-get install -y --no-install-recommends fastfetch curl git unzip xz-utils # openssh-client
 
 # Install exFAT support
 sudo apt-get install -y --no-install-recommends exfatprogs
