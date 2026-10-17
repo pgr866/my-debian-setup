@@ -6,8 +6,8 @@ cd /tmp
 sudo apt-get update
 sudo apt-get dist-upgrade -y
 
-# Install basic command-line tools
-sudo apt-get install -y --no-install-recommends fastfetch curl git unzip xz-utils # openssh-client
+# Install fastfetch for system information display
+sudo apt-get install -y --no-install-recommends fastfetch
 
 # Install exFAT support
 sudo apt-get install -y --no-install-recommends exfatprogs
@@ -32,6 +32,9 @@ sudo apt-get install -y --no-install-recommends obs-studio obs-plugins qtwayland
 
 # Install fonts for emoji and symbol support
 sudo apt-get install -y --no-install-recommends fonts-symbola fonts-noto-core fonts-noto-mono fonts-noto-color-emoji
+
+# Install Git for version control and repository management
+sudo apt-get install -y --no-install-recommends git
 
 # Configure Git with user name and email
 git config --global user.name "Pablo Gómez Rivas"

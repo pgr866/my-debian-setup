@@ -4,8 +4,8 @@ set -e
 # Ask for sudo privileges
 sudo -v
 
-# Install wget
-sudo apt-get install -y --no-install-recommends wget
+# Install basic command-line tools
+sudo apt-get install -y --no-install-recommends wget curl openssh-client unzip xz-utils
 
 # Usage: wget -qO- https://raw.githubusercontent.com/pgr866/my-debian-setup/main/install.sh | bash -s wallpaper.png
 # Optional wallpaper: a file in the repository root or a URL (none by default)
