@@ -19,6 +19,9 @@ else
     rm -f "$DATA/wallpapers/wallpaper.png"
 fi
 
+# Update the local package index
+sudo apt-get update
+
 # Minimal KDE Plasma: desktop, login manager, settings, file manager and terminal
 sudo apt-get install -y --no-install-recommends plasma-desktop sddm systemsettings dolphin konsole
 
