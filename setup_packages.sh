@@ -7,7 +7,7 @@ sudo apt-get update
 sudo apt-get dist-upgrade -y
 
 # Install basic command-line tools
-sudo apt-get install -y --no-install-recommends wget curl openssh-client unzip xz-utils
+sudo apt-get install -y --no-install-recommends wget ca-certificates curl openssh-client unzip xz-utils
 
 # Install fastfetch for system information display
 sudo apt-get install -y --no-install-recommends fastfetch

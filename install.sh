@@ -11,7 +11,7 @@ WALLPAPER="$1"
 sudo -v
 
 # Install wget for downloading files
-sudo apt-get install -y --no-install-recommends wget
+sudo apt-get install -y --no-install-recommends wget ca-certificates
 
 # Base URL of the repository raw files
 REPO="https://raw.githubusercontent.com/pgr866/my-debian-setup/main"

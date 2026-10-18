@@ -4,6 +4,9 @@ set -e
 # Usage: setup_plasma.sh [WALLPAPER]
 # WALLPAPER (optional): a file in the repository root or a URL. No wallpaper is set by default.
 
+# Install utilities for downloading and extracting files
+sudo apt-get install -y --no-install-recommends wget ca-certificates xz-utils
+
 # Optional wallpaper argument and base URL of the repository raw files
 WALLPAPER="$1"
 REPO="https://raw.githubusercontent.com/pgr866/my-debian-setup/main"
@@ -24,9 +27,6 @@ sudo apt-get update
 
 # Minimal KDE Plasma: desktop, login manager, settings, file manager and terminal
 sudo apt-get install -y --no-install-recommends plasma-desktop sddm systemsettings dolphin konsole
-
-# Install xz-utils for extracting XZ archives
-sudo apt-get install -y --no-install-recommends xz-utils
 
 # Install KDE Wallet PAM module and plugins for automatic keyring unlock at login
 sudo apt-get install -y --no-install-recommends libpam-kwallet5 libqca-qt6-plugins
