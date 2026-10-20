@@ -1,0 +1,37 @@
+/* Tokyo Night colors for GTK 3 apps */
+window, .background, headerbar, menubar, toolbar, .sidebar, .titlebar, paned > separator {
+    background-image: none;
+    background-color: #1a1b26;
+    color: #e0e6f7;
+}
+
+.view, iconview, treeview, textview text, entry, spinbutton {
+    background-color: #1a1b26;
+    color: #e0e6f7;
+}
+
+button, entry, spinbutton {
+    background-image: none;
+    background-color: #24283b;
+    border-color: #33467c;
+    color: #e0e6f7;
+}
+
+button:hover, menuitem:hover {
+    background-color: #33467c;
+}
+
+selection, .view:selected, iconview:selected, treeview:selected, row:selected {
+    background-color: #33467c;
+    color: #e0e6f7;
+}
+
+menu, .popup, tooltip {
+    background-color: #1a1b26;
+    border: 1px solid #33467c;
+    color: #e0e6f7;
+}
+
+tooltip label, menu label, menuitem label {
+    font-family: monospace;
+}

@@ -1,0 +1,91 @@
+* {
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+    font-family: "Inter", "FontAwesome", "monospace";
+    font-size: 12px;
+}
+
+window#waybar {
+    background-color: transparent;
+    color: #e0e6f7;
+}
+
+#workspaces button {
+    padding: 0 6px;
+    margin: 0 1px;
+    background: transparent;
+    color: #e0e6f7;
+}
+
+#workspaces button.focused {
+    background: #292e42;
+    font-weight: bold;
+}
+
+#workspaces button.urgent {
+    color: #f7768e;
+}
+
+#workspaces button:hover {
+    background: #24283b;
+}
+
+#window,
+#custom-notification,
+#custom-volume,
+#custom-mic,
+#custom-power,
+#backlight,
+#network,
+#bluetooth,
+#power-profiles-daemon,
+#cpu,
+#memory,
+#battery,
+#clock,
+#tray {
+    padding: 0 5px;
+    background-color: transparent;
+    color: #e0e6f7;
+}
+
+#battery.critical:not(.charging) {
+    color: #f7768e;
+}
+
+#network,
+#bluetooth {
+    font-family: "Material Design Icons", "Inter";
+}
+
+tooltip {
+    background-color: #1a1b26;
+    border: 1px solid #33467c;
+}
+
+tooltip label {
+    color: #e0e6f7;
+}
+
+tooltip label,
+menuitem label {
+    font-family: "monospace";
+}
+
+menu {
+    background-color: #1a1b26;
+    border: 1px solid #33467c;
+    padding: 2px 0;
+}
+
+menuitem {
+    padding: 2px 12px;
+    background: transparent;
+    color: #e0e6f7;
+}
+
+menuitem:hover {
+    background-color: #33467c;
+    color: #e0e6f7;
+}

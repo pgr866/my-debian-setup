@@ -1,0 +1,6 @@
+<interface><object class="GtkMenu" id="menu">
+<child><object class="GtkMenuItem" id="logout"><property name="label">logout</property></object></child>
+<child><object class="GtkMenuItem" id="suspend"><property name="label">suspend</property></object></child>
+<child><object class="GtkMenuItem" id="reboot"><property name="label">reboot</property></object></child>
+<child><object class="GtkMenuItem" id="shutdown"><property name="label">shutdown</property></object></child>
+</object></interface>

@@ -1,0 +1,139 @@
+{
+    "layer": "top",
+    "modules-left": [
+        "sway/workspaces"
+    ],
+    "modules-center": [
+        "sway/window"
+    ],
+    "modules-right": [
+        "custom/notification",
+        "custom/volume",
+        "custom/mic",
+        "backlight",
+        "network",
+        "bluetooth",
+        "power-profiles-daemon",
+        "battery",
+        "cpu",
+        "memory",
+        "tray",
+        "clock",
+        "custom/power"
+    ],
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "persistent-workspaces": {
+            "1": [],
+            "2": [],
+            "3": [],
+            "4": [],
+            "5": []
+        }
+    },
+    "sway/window": {
+        "max-length": 60
+    },
+    "custom/notification": {
+        "format": "{icon}",
+        "format-icons": {
+            "none": "\uf0f3",
+            "notification": "\u2022 \uf0f3",
+            "dnd-none": "\uf1f6",
+            "dnd-notification": "\u2022 \uf1f6"
+        },
+        "return-type": "json",
+        "exec": "d=; makoctl mode | grep -qx do-not-disturb && d=dnd-; makoctl history | awk -v d=\"$d\" 'function f() { if (id == \"\") return; n++; I[n] = id; L[n] = (a != \"\" ? a \": \" : \"\") t }\n/^Notification/ { f(); s = $0; sub(/^Notification /, \"\", s); id = s; sub(/:.*/, \"\", id); sub(/^[0-9]+: /, \"\", s); t = s; a = \"\" }\n/^  App name: / { a = $0; sub(/^  App name: /, \"\", a) }\nEND {\n  f()\n  for (i = 1; i <= n; i++) for (j = i + 1; j <= n; j++) if (I[j] + 0 > I[i] + 0) { x = I[i]; I[i] = I[j]; I[j] = x; y = L[i]; L[i] = L[j]; L[j] = y }\n  for (i = 1; i <= n; i++) {\n    g = L[i]; gsub(/&/, \"\\\\&amp;\", g); gsub(/</, \"\\\\&lt;\", g); gsub(/>/, \"\\\\&gt;\", g); gsub(/\"/, \"\\\\&quot;\", g); gsub(\"\\047\", \"\\\\&#x27;\", g); gsub(/\\\\/, \"\\\\\\\\\", g)\n    o = o (i > 1 ? \"\\\\n\\\\n\" : \"\") g\n  }\n  print \"{\\\"alt\\\":\\\"\" d (n ? \"notification\" : \"none\") \"\\\",\\\"tooltip\\\":\\\"\" (n ? o : \"No notifications\") \"\\\"}\"\n}'",
+        "interval": "once",
+        "signal": 10,
+        "on-click": "makoctl mode -t do-not-disturb; pkill -RTMIN+10 waybar",
+        "on-click-right": "for i in $(seq $(makoctl history | grep -c ^Notification)); do makoctl restore; done; makoctl dismiss -a -h; pkill -RTMIN+10 waybar"
+    },
+    "clock": {
+        "format": "{:%d/%m/%Y %H:%M}",
+        "tooltip-format": "<small>{calendar}</small>",
+        "calendar": {
+            "format": {
+                "today": "<span color='#7aa2f7'><b><u>{}</u></b></span>"
+            }
+        },
+        "actions": {
+            "on-scroll-up": "shift_up",
+            "on-scroll-down": "shift_down"
+        }
+    },
+    "custom/volume": {
+        "format": " {}",
+        "return-type": "json",
+        "exec": "v=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{ if ($3) print \"mute\"; else print int($2*100)\"%\" }'); d=$(wpctl inspect @DEFAULT_AUDIO_SINK@ | sed -n 's/.*node.description = \"\\(.*\\)\"/\\1/p' | sed 's/\\\\/\\\\\\\\/g; s/\"/\\\\\"/g; s/&/\\&amp;/g; s/</\\&lt;/g; s/>/\\&gt;/g'); printf '{\"text\":\"%s\",\"tooltip\":\"%s\\\\n%s\"}\\n' \"$v\" \"$v\" \"$d\"",
+        "interval": "once",
+        "signal": 8,
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; pkill -RTMIN+8 waybar",
+        "on-scroll-up": "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+; pkill -RTMIN+8 waybar",
+        "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-; pkill -RTMIN+8 waybar"
+    },
+    "custom/mic": {
+        "format": "\uf130 {}",
+        "return-type": "json",
+        "exec": "v=$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | awk '{ if ($3) print \"mute\"; else print int($2*100)\"%\" }'); d=$(wpctl inspect @DEFAULT_AUDIO_SOURCE@ | sed -n 's/.*node.description = \"\\(.*\\)\"/\\1/p' | sed 's/\\\\/\\\\\\\\/g; s/\"/\\\\\"/g; s/&/\\&amp;/g; s/</\\&lt;/g; s/>/\\&gt;/g'); printf '{\"text\":\"%s\",\"tooltip\":\"%s\\\\n%s\"}\\n' \"$v\" \"$v\" \"$d\"",
+        "interval": "once",
+        "signal": 9,
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle; pkill -RTMIN+9 waybar",
+        "on-scroll-up": "wpctl set-volume -l 1 @DEFAULT_AUDIO_SOURCE@ 5%+; pkill -RTMIN+9 waybar",
+        "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-; pkill -RTMIN+9 waybar"
+    },
+    "custom/power": {
+        "format": "\uf011",
+        "tooltip": false,
+        "menu": "on-click",
+        "menu-file": "~/.config/waybar/power_menu.xml",
+        "menu-actions": {
+            "logout": "swaymsg exit",
+            "suspend": "systemctl suspend",
+            "reboot": "systemctl reboot",
+            "shutdown": "systemctl poweroff"
+        }
+    },
+    "network": {
+        "format": "\uf5aa",
+        "format-wifi": "\uf5a9 {signalStrength}%",
+        "on-click": "nmcli radio wifi on; while :; do m=$(nmcli -t -f IN-USE,SSID,SIGNAL,SECURITY device wifi list | sort -t: -k1,1r -k3,3nr | { echo \"+ scan for new networks\"; while IFS=: read -r u s q c; do [ -n \"$s\" ] || continue; case \"$seen\" in *\"|$s|\"*) continue;; esac; seen=\"$seen|$s|\"; [ \"$u\" = \"*\" ] && a=\"* \" || a=\"  \"; printf \"%s%s  %s%%  %s\\n\" \"$a\" \"$s\" \"$q\" \"${c:-open}\"; done; } | fuzzel --dmenu --prompt \"wifi \" --lines 8) || exit 0; [ -n \"$m\" ] || exit 0; case $m in \"+ scan\"*) nmcli device wifi rescan; sleep 3; continue;; esac; s=$(printf \"%s\" \"$m\" | sed -E \"s/^..(.*)  [0-9]+%  .*\\$/\\1/\"); if printf \"%s\" \"$m\" | grep -q \"^\\* \"; then nmcli device disconnect \"$(nmcli -t -f DEVICE,TYPE device | sed -n \"s/:wifi\\$//p\" | head -1)\"; elif nmcli -t -f NAME connection show | grep -qxF \"$s\"; then nmcli connection up \"$s\"; elif printf \"%s\" \"$m\" | grep -q \"  open\\$\"; then nmcli device wifi connect \"$s\"; else nmcli device wifi connect \"$s\" password \"$(fuzzel --dmenu --prompt-only \"password \" --password)\"; fi; exit 0; done",
+        "tooltip-format-ethernet": "{ifname}\t{ipaddr}",
+        "tooltip-format-disconnected": "Wi-Fi: not connected",
+        "tooltip-format-wifi": "{essid}\t{ipaddr}"
+    },
+    "backlight": {
+        "format": " {percent}%"
+    },
+    "bluetooth": {
+        "format": "\uf0b2",
+        "format-disabled": "\uf0b2",
+        "on-click": "timeout 3 bluetoothctl power on >/dev/null; while :; do m=$( { echo \"+ scan for new devices (8 s)\"; timeout 3 bluetoothctl devices | while read -r _ a n; do timeout 3 bluetoothctl info \"$a\" | grep -q \"Connected: yes\" && c=\"* \" || c=\"  \"; printf \"%s%s  %s\\n\" \"$c\" \"$n\" \"$a\"; done; } | fuzzel --dmenu --prompt \"bluetooth \" --lines 8) || exit 0; [ -n \"$m\" ] || exit 0; case $m in \"+ scan\"*) bluetoothctl --timeout 8 scan on >/dev/null; continue;; esac; a=${m##* }; if printf \"%s\" \"$m\" | grep -q \"^\\* \"; then bluetoothctl disconnect \"$a\"; else bluetoothctl pair \"$a\"; bluetoothctl trust \"$a\"; bluetoothctl connect \"$a\"; fi; exit 0; done",
+        "format-connected": "\uf0b1 {device_alias}",
+        "tooltip-format": "{controller_alias}\t{controller_address}",
+        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}"
+    },
+    "power-profiles-daemon": {
+        "format": "{icon}",
+        "tooltip-format": "Perfil: {profile}",
+        "on-scroll-up": "powerprofilesctl set $(case $(powerprofilesctl get) in power-saver) echo balanced;; *) echo performance;; esac)",
+        "on-scroll-down": "powerprofilesctl set $(case $(powerprofilesctl get) in performance) echo balanced;; *) echo power-saver;; esac)",
+        "format-icons": {
+            "performance": "",
+            "balanced": "",
+            "power-saver": ""
+        }
+    },
+    "cpu": {
+        "format": " {usage}%"
+    },
+    "memory": {
+        "format": " {percentage}%"
+    },
+    "battery": {
+        "format": "{icon} {capacity}%",
+        "format-charging": " {capacity}%",
+        "format-icons": ["", "", "", "", ""]
+    }
+}

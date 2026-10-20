@@ -1,0 +1,15 @@
+image=/usr/local/share/backgrounds/wallpaper.png
+color=1a1b26
+font=monospace
+inside-color=1a1b26
+ring-color=33467c
+key-hl-color=7aa2f7
+line-color=00000000
+separator-color=00000000
+text-color=e0e6f7
+inside-wrong-color=1a1b26
+ring-wrong-color=f7768e
+text-wrong-color=f7768e
+inside-ver-color=1a1b26
+ring-ver-color=7aa2f7
+text-ver-color=7aa2f7

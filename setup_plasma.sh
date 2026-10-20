@@ -4,6 +4,9 @@ set -e
 # Usage: setup_plasma.sh [WALLPAPER]
 # WALLPAPER (optional): a file in the repository root or a URL. No wallpaper is set by default.
 
+# Update the local package index
+sudo apt-get update
+
 # Install utilities for downloading and extracting files
 sudo apt-get install -y --no-install-recommends wget ca-certificates xz-utils
 
@@ -21,9 +24,6 @@ if [ -n "$WALLPAPER" ]; then
 else
     rm -f "$DATA/wallpapers/wallpaper.png"
 fi
-
-# Update the local package index
-sudo apt-get update
 
 # Minimal KDE Plasma: desktop, login manager, settings, file manager and terminal
 sudo apt-get install -y --no-install-recommends plasma-desktop sddm systemsettings dolphin konsole
